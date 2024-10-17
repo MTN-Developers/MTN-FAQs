@@ -2,26 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.ant-input-search .ant-input-group .ant-input-affix-wrapper {
+  height: 45px; /* Adjust this value as needed */
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.ant-input-search .ant-input-group .ant-input-search-button {
+  height: 45px; /* Adjust this value as needed */
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Example CSS */
+
+.alphabets {
+  margin: 10px 0;
+}
+
+/* .alphabet-button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 18px;
+  cursor: pointer;
+} */
+
+/* .alphabet-button:hover {
+  background-color: #f0f0f0;
+} */
+
+.organs {
+  margin-top: 20px;
+}
+
+.organs h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.organs ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.organs li {
+  padding: 5px 0;
+  font-size: 18px;
+}
+
+/* Example CSS to customize pagination arrows and page numbers */
+.ant-pagination {
+  direction: ltr; /* To make arrows point in the correct direction for RTL */
+}
+
+.ant-pagination-item {
+  width: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ant-pagination-item a {
+  font-weight: 400;
+}
+
+.ant-pagination-item .ant-pagination-item-active a {
+  color: white !important;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: white !important;
 }

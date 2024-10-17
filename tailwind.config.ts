@@ -12,6 +12,10 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        pnu: ["var(--font-pnu-arabic)", "sans-serif"],
+        // Include other custom fonts if needed
+      },
     },
   },
   plugins: [],
