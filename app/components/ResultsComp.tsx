@@ -19,21 +19,35 @@ const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredOrgans, setFilteredOrgans] = useState<OrganData[]>([]);
 
+  // Utility function to remove Arabic diacritics
+  function removeArabicDiacritics(text: string): string {
+    return text.replace(/[\u064B-\u0652]/g, "");
+  }
+
   useEffect(() => {
     let filtered: OrganData[] = [];
 
     if (searchTerm && searchTerm.trim() !== "") {
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      const normalizedSearchTerm =
+        removeArabicDiacritics(searchTerm).toLowerCase();
 
       filtered = organsData.filter((organData) => {
-        const organName = organData.organ.toLowerCase();
+        const organName = removeArabicDiacritics(organData.organ).toLowerCase();
+        const symptoms = removeArabicDiacritics(
+          organData.symptoms
+        ).toLowerCase();
+        const emotions = removeArabicDiacritics(
+          organData.emotions
+        ).toLowerCase();
         const diseases = organData.diseases.map((disease) =>
-          disease.toLowerCase()
+          removeArabicDiacritics(disease).toLowerCase()
         );
 
         return (
-          organName.includes(lowerCaseSearchTerm) ||
-          diseases.some((disease) => disease.includes(lowerCaseSearchTerm))
+          organName.includes(normalizedSearchTerm) ||
+          symptoms.includes(normalizedSearchTerm) ||
+          emotions.includes(normalizedSearchTerm) ||
+          diseases.some((disease) => disease.includes(normalizedSearchTerm))
         );
       });
     } else if (selectedLetter) {
