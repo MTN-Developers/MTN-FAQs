@@ -1,76 +1,63 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { OrganData } from "../data/organsData";
 import { useAppSelector } from "../store";
 import SingleResultComp from "./SingleResultComp";
-import { Pagination, ConfigProvider } from "antd";
+import { ConfigProvider, Pagination } from "antd";
 
-const organs = [
-  "المعدة",
-  "الامعاء",
-  "الرئة",
-  "القلب",
-  "الكبد",
-  "الطحال",
-  "الدماغ",
-  "العين",
-  "الاذن",
-  "الاذن الداخلية",
-  "الاذن الخارجية",
-  "الاذن الوسطي",
-  "الانف",
-  "اللسان",
-  "الكلية",
-  "البنكرياس",
-  "الحلق",
-  "الحنجرة",
-  "الأسنان",
-  "الشعر",
-  "الجلد",
-  "العضلات",
-  "العظام",
-];
+interface ResultsCompProps {
+  searchTerm?: string;
+}
 
-const ResultsComp = () => {
+const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
+  const organsData = useAppSelector((state) => state.organs.data);
   const selectedLetter = useAppSelector(
     (state) => state.alphabet.selectedLetter
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5); // Default to 1 for large screens
+  const [filteredOrgans, setFilteredOrgans] = useState<OrganData[]>([]);
 
   useEffect(() => {
-    const updatePageSize = () => {
-      if (window.innerWidth < 768) {
-        // Mobile screen (e.g., width less than 768px)
-        setPageSize(3);
-      } else {
-        // Larger screens
-        setPageSize(5);
-      }
-    };
+    let filtered: OrganData[] = [];
 
-    // Initial check
-    updatePageSize();
+    if (searchTerm && searchTerm.trim() !== "") {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-    // Add event listener
-    window.addEventListener("resize", updatePageSize);
+      filtered = organsData.filter((organData) => {
+        const organName = organData.organ.toLowerCase();
+        const diseases = organData.diseases.map((disease) =>
+          disease.toLowerCase()
+        );
 
-    // Clean up event listener on component unmount
-    return () => window.removeEventListener("resize", updatePageSize);
-  }, []);
+        return (
+          organName.includes(lowerCaseSearchTerm) ||
+          diseases.some((disease) => disease.includes(lowerCaseSearchTerm))
+        );
+      });
+    } else if (selectedLetter) {
+      filtered = organsData.filter((organData) => {
+        const organName = organData.organ.startsWith("ال")
+          ? organData.organ.slice(2)
+          : organData.organ;
+        const firstLetter = organName[0];
 
-  // Filter organs that start with the selected letter after removing "ال" if it exists
-  const filteredOrgans = organs.filter((organ) => {
-    const organWithoutAl = organ.startsWith("ال") ? organ.slice(2) : organ;
-    const firstLetter = organWithoutAl[0];
-    return firstLetter === selectedLetter;
-  });
+        return firstLetter === selectedLetter;
+      });
+    }
 
-  if (!selectedLetter) {
-    return null; // Render nothing if no letter is selected
+    setFilteredOrgans(filtered);
+    setCurrentPage(1); // Reset to first page on new search or letter selection
+  }, [searchTerm, organsData, selectedLetter]);
+
+  // If no search term and no letter is selected, render nothing
+  if (!searchTerm && !selectedLetter) {
+    return null;
   }
 
+  // Pagination logic
+  const pageSize = 5; // Adjust as needed
   const total = filteredOrgans.length;
   const indexOfLastOrgan = currentPage * pageSize;
   const indexOfFirstOrgan = indexOfLastOrgan - pageSize;
@@ -107,10 +94,11 @@ const ResultsComp = () => {
     <div className="organs md:mt-[64px]">
       {filteredOrgans.length > 0 ? (
         <div>
-          {currentOrgans.map((organ) => (
-            <SingleResultComp key={organ} organ={organ} />
+          {currentOrgans.map((organData) => (
+            <SingleResultComp key={organData.organ} organData={organData} />
           ))}
 
+          {/* Pagination Component */}
           {/* Pagination Component */}
           <div className="flex justify-center mt-4" dir="ltr">
             <ConfigProvider
@@ -142,7 +130,7 @@ const ResultsComp = () => {
           className="mx-auto flex items-center justify-center md:mb-[48px] md:w-[880px] bg-white shadow-lg rounded-xl md:min-h-[518px] md:px-[90px] md:py-[60px]"
         >
           <p className="text-2xl font-pnu font-bold text-gray-400">
-            لا توجد أعضاء تبدأ بهذا الحرف.
+            لا توجد نتائج مطابقة للبحث.
           </p>
         </div>
       )}

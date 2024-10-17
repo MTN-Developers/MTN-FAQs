@@ -47,15 +47,12 @@ const AlphabetComp = () => {
 
   return (
     <div>
-      <div
-        dir="rtl"
-        className="alphabets text-start md:text-center md:px-[90px] px-[32px] my-[30px]"
-      >
+      <div dir="rtl" className="alphabets text-center md:px-[90px]">
         {alphabets.map((letter) => (
           <button
             key={letter}
             onClick={() => handleLetterClick(letter)}
-            className={`md:m-[6px] md:py-2 md:px-3 mb-4 md:text-[20px] text-2xl m-[1px] py-[4px] px-[9px] transition duration-300 font-pnu font-bold cursor-pointer rounded-sm hover:bg-[#609ae9] hover:text-white ${
+            className={`md:m-[6px] md:py-2 md:px-3 md:text-[20px] m-[1px] py-[4px] px-[9px] font-pnu font-bold cursor-pointer rounded-sm hover:bg-[#609ae9] hover:text-white ${
               selectedLetter === letter
                 ? "text-white bg-[#609ae9]"
                 : "text-gray-600"
