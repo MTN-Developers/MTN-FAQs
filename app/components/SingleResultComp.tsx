@@ -29,7 +29,7 @@ const SingleResultComp: React.FC<SingleResultCompProps> = ({ organData }) => {
         </p>
       </div>
       <div className="md:mt-[56px]">
-        <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7">
+        <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7 mt-4">
           - المشاعر المضطربة:
         </h2>
 

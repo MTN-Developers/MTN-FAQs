@@ -8,9 +8,15 @@ import { ConfigProvider, Pagination } from "antd";
 
 interface ResultsCompProps {
   searchTerm?: string;
+  organs?: OrganData[];
+  selectedOrgan?: string;
 }
 
-const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
+const ResultsComp: React.FC<ResultsCompProps> = ({
+  searchTerm,
+  organs,
+  selectedOrgan,
+}) => {
   const organsData = useAppSelector((state) => state.organs.data);
   const selectedLetter = useAppSelector(
     (state) => state.alphabet.selectedLetter
@@ -27,7 +33,20 @@ const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
   useEffect(() => {
     let filtered: OrganData[] = [];
 
-    if (searchTerm && searchTerm.trim() !== "") {
+    if (organs && organs.length > 0) {
+      // Use the organs provided via props
+      filtered = organs;
+    } else if (selectedOrgan) {
+      // Filter organsData for selectedOrgan
+      const normalizedSelectedOrgan =
+        removeArabicDiacritics(selectedOrgan).toLowerCase();
+
+      filtered = organsData.filter((organData) => {
+        const organName = removeArabicDiacritics(organData.organ).toLowerCase();
+        return organName === normalizedSelectedOrgan;
+      });
+    } else if (searchTerm && searchTerm.trim() !== "") {
+      // Existing searchTerm filtering logic
       const normalizedSearchTerm =
         removeArabicDiacritics(searchTerm).toLowerCase();
 
@@ -51,6 +70,7 @@ const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
         );
       });
     } else if (selectedLetter) {
+      // Existing selectedLetter filtering logic
       filtered = organsData.filter((organData) => {
         const organName = organData.organ.startsWith("ال")
           ? organData.organ.slice(2)
@@ -63,10 +83,15 @@ const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
 
     setFilteredOrgans(filtered);
     setCurrentPage(1); // Reset to first page on new search or letter selection
-  }, [searchTerm, organsData, selectedLetter]);
+  }, [searchTerm, organs, selectedOrgan, organsData, selectedLetter]);
 
-  // If no search term and no letter is selected, render nothing
-  if (!searchTerm && !selectedLetter) {
+  // If no data to display, render nothing
+  if (
+    !searchTerm &&
+    !selectedLetter &&
+    !selectedOrgan &&
+    (!organs || organs.length === 0)
+  ) {
     return null;
   }
 
@@ -112,7 +137,6 @@ const ResultsComp: React.FC<ResultsCompProps> = ({ searchTerm }) => {
             <SingleResultComp key={organData.organ} organData={organData} />
           ))}
 
-          {/* Pagination Component */}
           {/* Pagination Component */}
           <div className="flex justify-center mt-4" dir="ltr">
             <ConfigProvider

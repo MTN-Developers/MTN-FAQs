@@ -16,7 +16,6 @@ import { HiOutlineArrowLeftCircle } from "react-icons/hi2";
 // Organs array
 const organs = [
   "المعدة",
-  "الامعاء",
   "الرئة",
   "القلب",
   "الكبد",
@@ -37,7 +36,11 @@ const organs = [
   "العظام",
 ];
 
-const SliderComp = () => {
+interface SliderCompProps {
+  onSelectOrgan: (organ: string) => void;
+}
+
+const SliderComp: React.FC<SliderCompProps> = ({ onSelectOrgan }) => {
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
 
@@ -71,12 +74,15 @@ const SliderComp = () => {
         }}
         spaceBetween={5}
         slidesPerView="auto"
-        className="flex items-center "
+        className="flex items-center"
       >
         {/* Dynamically generate SwiperSlides from organs array */}
         {organs.map((organ, index) => (
           <SwiperSlide key={index} className="!w-auto">
-            <div className="hover:bg-[#00204c] hover:text-white mx-[8px] text-gray-500 cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px]">
+            <div
+              onClick={() => onSelectOrgan(organ)}
+              className="hover:bg-[#00204c] hover:text-white mx-[8px] text-gray-500 cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px]"
+            >
               {organ}
             </div>
           </SwiperSlide>
