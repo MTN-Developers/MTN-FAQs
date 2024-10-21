@@ -2,17 +2,26 @@
 
 import React, { useState } from "react";
 import { Input } from "antd";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const { Search } = Input;
 
 const SearchComp = () => {
+  const params = useParams();
+  const slug = params.slug;
+
+  // console.log(typeof slug);
+
   const [searchValue, setSearchValue] = useState("");
   const router = useRouter();
 
   const onSearch = (value: string) => {
     if (value.trim() !== "") {
-      router.push(`/search?query=${encodeURIComponent(value)}`);
+      if (slug) {
+        router.push(`/${slug}/search?query=${encodeURIComponent(value)}`);
+      } else {
+        router.push(`/${slug}/search?query=${encodeURIComponent(value)}`);
+      }
     }
   };
 

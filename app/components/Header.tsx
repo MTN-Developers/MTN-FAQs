@@ -1,12 +1,16 @@
+"use client";
 import React from "react";
 import logo from "@/app/assets/images/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const Header = () => {
+  const params = useParams();
+  const slug = params.slug;
   return (
     <div className="w-full">
-      <Link href={"/"}>
+      <Link href={`/${slug}`}>
         <Image
           src={logo}
           alt="logo"

@@ -1,48 +1,27 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
+import { CourseFaq } from "../types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-
-// Import Swiper navigation module and styles
 import { Navigation } from "swiper/modules";
 import "swiper/css/navigation";
-
-import { Swiper as SwiperType } from "swiper";
-
-import { HiOutlineArrowRightCircle } from "react-icons/hi2";
-import { HiOutlineArrowLeftCircle } from "react-icons/hi2";
-
-// Organs array
-const organs = [
-  "المعدة",
-  "الرئة",
-  "القلب",
-  "الكبد",
-  "الطحال",
-  "الدماغ",
-  "العين",
-  "الاذن",
-  "الانف",
-  "اللسان",
-  "الكلية",
-  "البنكرياس",
-  "الحلق",
-  "الحنجرة",
-  "الأسنان",
-  "الشعر",
-  "الجلد",
-  "العضلات",
-  "العظام",
-];
+import {
+  HiOutlineArrowRightCircle,
+  HiOutlineArrowLeftCircle,
+} from "react-icons/hi2";
 
 interface SliderCompProps {
+  faqs: CourseFaq[];
   onSelectOrgan: (organ: string) => void;
 }
 
-const SliderComp: React.FC<SliderCompProps> = ({ onSelectOrgan }) => {
-  const prevRef = useRef<HTMLButtonElement | null>(null);
-  const nextRef = useRef<HTMLButtonElement | null>(null);
+const SliderComp: React.FC<SliderCompProps> = ({ faqs, onSelectOrgan }) => {
+  const prevRef = React.useRef<HTMLButtonElement | null>(null);
+  const nextRef = React.useRef<HTMLButtonElement | null>(null);
+
+  // Extract unique organ names from faqs (assuming 'title' corresponds to organ)
+  const organs = Array.from(new Set(faqs.map((faq) => faq.title)));
 
   return (
     <div
@@ -63,7 +42,7 @@ const SliderComp: React.FC<SliderCompProps> = ({ onSelectOrgan }) => {
           prevEl: prevRef.current,
           nextEl: nextRef.current,
         }}
-        onBeforeInit={(swiper: SwiperType) => {
+        onBeforeInit={(swiper) => {
           if (
             swiper.params.navigation &&
             typeof swiper.params.navigation !== "boolean"

@@ -12,9 +12,9 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center">
-      <h1 className="md:pt-[60px] text-white text-center mt-10 text-[64px] md:text-8xl font-pnu font-bold leading-normal">
+      {/* <h1 className="md:pt-[60px] text-white text-center mt-10 text-[64px] md:text-8xl font-pnu font-bold leading-normal">
         الأذن الخارجية
-      </h1>
+      </h1> */}
       <div className="mx-auto md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
         <SearchComp />
       </div>

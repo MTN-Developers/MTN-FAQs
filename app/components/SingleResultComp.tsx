@@ -1,52 +1,44 @@
 "use client";
 
 import React from "react";
-import { OrganData } from "../data/organsData";
+import { CourseFaq } from "../types";
 
 interface SingleResultCompProps {
-  organData: OrganData;
+  faq: CourseFaq;
 }
 
-const SingleResultComp: React.FC<SingleResultCompProps> = ({ organData }) => {
-  const { organ, symptoms, emotions, diseases } = organData;
+const SingleResultComp: React.FC<SingleResultCompProps> = ({ faq }) => {
+  console.log("from single result comp", faq);
+
+  const { title, question, answer } = faq;
+  console.log("obj", { title, question, answer });
 
   return (
     <div
       dir="rtl"
       className="mx-auto mb-4 md:mb-[48px] md:w-[680px] lg:w-[880px] bg-white shadow-lg rounded-xl h-auto w-[310px] md:min-h-[518px] px-6 py-10 md:px-[90px] md:py-[60px]"
     >
-      <h1 className=" md:mb-[56px] text-black text-right font-pnu text-[40px] md:text-[40px] font-bold leading-7">
-        {organ}
+      <h1 className="md:mb-[56px] text-black text-right font-pnu text-[40px] md:text-[40px] font-bold leading-7">
+        {title}
       </h1>
 
       <div className="border-b">
         <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7">
-          - الأعراض:
+          - السؤال:
         </h2>
 
         <p className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px]">
-          {symptoms}
-        </p>
-      </div>
-      <div className="md:mt-[56px]">
-        <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7 mt-4">
-          - المشاعر المضطربة:
-        </h2>
-
-        <p className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px]">
-          {emotions}
+          {question}
         </p>
       </div>
       <div className="md:mt-[56px]">
         <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7">
-          - الأمراض:
+          - الإجابة:
         </h2>
 
-        <ul className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px] list-disc list-inside">
-          {diseases.map((disease) => (
-            <li key={disease}>{disease}</li>
-          ))}
-        </ul>
+        <p className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px]">
+          {answer}
+        </p>
       </div>
     </div>
   );

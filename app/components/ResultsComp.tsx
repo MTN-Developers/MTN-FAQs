@@ -1,109 +1,94 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { OrganData } from "../data/organsData";
-import { useAppSelector } from "../store";
+import React, { useState } from "react";
+import { CourseFaq } from "../types";
 import SingleResultComp from "./SingleResultComp";
 import { ConfigProvider, Pagination } from "antd";
+import { useAppSelector } from "../store/";
 
 interface ResultsCompProps {
   searchTerm?: string;
-  organs?: OrganData[];
+  faqs: CourseFaq[];
   selectedOrgan?: string;
 }
 
 const ResultsComp: React.FC<ResultsCompProps> = ({
   searchTerm,
-  organs,
+  faqs,
   selectedOrgan,
 }) => {
-  const organsData = useAppSelector((state) => state.organs.data);
   const selectedLetter = useAppSelector(
     (state) => state.alphabet.selectedLetter
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredOrgans, setFilteredOrgans] = useState<OrganData[]>([]);
+  // const [filteredFaqs, setFilteredFaqs] = useState<CourseFaq[]>([]);
+
+  console.log("inside component", faqs);
 
   // Utility function to remove Arabic diacritics
-  function removeArabicDiacritics(text: string): string {
-    return text.replace(/[\u064B-\u0652]/g, "");
-  }
+  // function removeArabicDiacritics(text: string): string {
+  //   return text.replace(/[\u064B-\u0652]/g, "");
+  // }
 
-  useEffect(() => {
-    let filtered: OrganData[] = [];
+  // useEffect(() => {
+  //   let filtered: CourseFaq[] = [...faqs];
 
-    if (organs && organs.length > 0) {
-      // Use the organs provided via props
-      filtered = organs;
-    } else if (selectedOrgan) {
-      // Filter organsData for selectedOrgan
-      const normalizedSelectedOrgan =
-        removeArabicDiacritics(selectedOrgan).toLowerCase();
+  //   // Filter by selectedOrgan (assuming 'title' corresponds to organ)
+  //   if (selectedOrgan) {
+  //     const normalizedSelectedOrgan =
+  //       removeArabicDiacritics(selectedOrgan).toLowerCase();
+  //     filtered = filtered.filter((faq) =>
+  //       removeArabicDiacritics(faq.title)
+  //         .toLowerCase()
+  //         .includes(normalizedSelectedOrgan)
+  //     );
+  //   }
 
-      filtered = organsData.filter((organData) => {
-        const organName = removeArabicDiacritics(organData.organ).toLowerCase();
-        return organName === normalizedSelectedOrgan;
-      });
-    } else if (searchTerm && searchTerm.trim() !== "") {
-      // Existing searchTerm filtering logic
-      const normalizedSearchTerm =
-        removeArabicDiacritics(searchTerm).toLowerCase();
+  //   // // Filter by searchTerm
+  //   // if (searchTerm && searchTerm.trim() !== "") {
+  //   //   const normalizedSearchTerm =
+  //   //     removeArabicDiacritics(searchTerm).toLowerCase();
+  //   //   filtered = filtered.filter(
+  //   //     (faq) =>
+  //   //       removeArabicDiacritics(faq.title)
+  //   //         .toLowerCase()
+  //   //         .includes(normalizedSearchTerm) ||
+  //   //       removeArabicDiacritics(faq.question)
+  //   //         .toLowerCase()
+  //   //         .includes(normalizedSearchTerm) ||
+  //   //       removeArabicDiacritics(faq.answer)
+  //   //         .toLowerCase()
+  //   //         .includes(normalizedSearchTerm)
+  //   //   );
+  //   // }
 
-      filtered = organsData.filter((organData) => {
-        const organName = removeArabicDiacritics(organData.organ).toLowerCase();
-        const symptoms = removeArabicDiacritics(
-          organData.symptoms
-        ).toLowerCase();
-        const emotions = removeArabicDiacritics(
-          organData.emotions
-        ).toLowerCase();
-        const diseases = organData.diseases.map((disease) =>
-          removeArabicDiacritics(disease).toLowerCase()
-        );
+  //   // Filter by selectedLetter (first letter of title)
+  //   if (selectedLetter) {
+  //     filtered = filtered.filter((faq) => {
+  //       const title = faq.title.startsWith("ال")
+  //         ? faq.title.slice(2)
+  //         : faq.title;
+  //       const firstLetter = removeArabicDiacritics(title[0]).toLowerCase();
+  //       return firstLetter === selectedLetter.toLowerCase();
+  //     });
+  //   }
 
-        return (
-          organName.includes(normalizedSearchTerm) ||
-          symptoms.includes(normalizedSearchTerm) ||
-          emotions.includes(normalizedSearchTerm) ||
-          diseases.some((disease) => disease.includes(normalizedSearchTerm))
-        );
-      });
-    } else if (selectedLetter) {
-      // Existing selectedLetter filtering logic
-      filtered = organsData.filter((organData) => {
-        const organName = organData.organ.startsWith("ال")
-          ? organData.organ.slice(2)
-          : organData.organ;
-        const firstLetter = organName[0];
-
-        return firstLetter === selectedLetter;
-      });
-    }
-
-    setFilteredOrgans(filtered);
-    setCurrentPage(1); // Reset to first page on new search or letter selection
-  }, [searchTerm, organs, selectedOrgan, organsData, selectedLetter]);
+  //   setFilteredFaqs(filtered);
+  //   setCurrentPage(1); // Reset to first page on new filter
+  // }, [searchTerm, faqs, selectedOrgan, selectedLetter]);
 
   // If no data to display, render nothing
-  if (
-    !searchTerm &&
-    !selectedLetter &&
-    !selectedOrgan &&
-    (!organs || organs.length === 0)
-  ) {
+  if (!searchTerm && !selectedLetter && !selectedOrgan && faqs.length === 0) {
     return null;
   }
 
   // Pagination logic
   const pageSize = 5; // Adjust as needed
-  const total = filteredOrgans.length;
-  const indexOfLastOrgan = currentPage * pageSize;
-  const indexOfFirstOrgan = indexOfLastOrgan - pageSize;
-  const currentOrgans = filteredOrgans.slice(
-    indexOfFirstOrgan,
-    indexOfLastOrgan
-  );
+  const total = faqs.length;
+  const indexOfLastFaq = currentPage * pageSize;
+  const indexOfFirstFaq = indexOfLastFaq - pageSize;
+  const currentFaqs = faqs.slice(indexOfFirstFaq, indexOfLastFaq);
 
   // Custom item render function for pagination
   const itemRender = (
@@ -130,11 +115,11 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
   };
 
   return (
-    <div className="organs md:mt-[64px]">
-      {filteredOrgans.length > 0 ? (
+    <div className="faqs md:mt-[64px]">
+      {faqs.length > 0 ? (
         <div>
-          {currentOrgans.map((organData) => (
-            <SingleResultComp key={organData.organ} organData={organData} />
+          {currentFaqs.map((faq) => (
+            <SingleResultComp key={faq.id} faq={faq} />
           ))}
 
           {/* Pagination Component */}
