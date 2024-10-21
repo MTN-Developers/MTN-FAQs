@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setSelectedLetter } from "../store/slices/alphabetSlice";
+import { useGetSearchResultByIndexQuery } from "../store/apiSlice";
 
 const alphabets = [
   "ا",
@@ -35,15 +36,51 @@ const alphabets = [
   "ي",
 ];
 
-const AlphabetComp = () => {
+interface IProps {
+  courseId: string;
+  setFaqsData: React.Dispatch<React.SetStateAction<any[]>>;
+  onSelectOrgan: (organ: string) => void;
+}
+
+const AlphabetComp: React.FC<IProps> = ({
+  courseId,
+  setFaqsData,
+  onSelectOrgan,
+}: IProps) => {
   const dispatch = useAppDispatch();
   const selectedLetter = useAppSelector(
     (state) => state.alphabet.selectedLetter
   );
 
-  const handleLetterClick = (letter: string) => {
-    dispatch(setSelectedLetter(letter));
-  };
+  const { data: searchResults, refetch } = useGetSearchResultByIndexQuery(
+    {
+      courseId,
+      index: selectedLetter,
+    },
+    {
+      skip: !selectedLetter,
+    }
+  );
+
+  const handleLetterClick = useCallback(
+    (letter: string) => {
+      dispatch(setSelectedLetter(letter));
+      onSelectOrgan("");
+    },
+    [dispatch]
+  );
+
+  React.useEffect(() => {
+    if (selectedLetter) {
+      refetch();
+    }
+  }, [selectedLetter, refetch]);
+
+  React.useEffect(() => {
+    if (searchResults) {
+      setFaqsData(searchResults);
+    }
+  }, [searchResults, setFaqsData]);
 
   return (
     <div>

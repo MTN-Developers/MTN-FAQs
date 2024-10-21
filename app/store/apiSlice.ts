@@ -24,6 +24,13 @@ export const apiSlice = createApi({
       query: ({ courseId, keyword }) =>
         `course_faqs/${courseId}/search?keyword=${encodeURIComponent(keyword)}`,
     }),
+    getSearchResultByIndex: builder.query<
+      CourseFaq[],
+      { courseId: string; index: string }
+    >({
+      query: ({ courseId, index }) =>
+        `course_faqs/${courseId}/search?index=${encodeURIComponent(index)}`,
+    }),
   }),
 });
 
@@ -31,5 +38,6 @@ export const apiSlice = createApi({
 export const {
   useGetCourseMetaDataBySlugQuery,
   useGetCourseFaqsQuery,
-  useGetSearchResultQuery, // Exported hook for the search endpoint
+  useGetSearchResultQuery,
+  useGetSearchResultByIndexQuery, // Exported hook for the search endpoint
 } = apiSlice;

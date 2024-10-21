@@ -5,7 +5,7 @@ interface AlphabetState {
 }
 
 const initialState: AlphabetState = {
-  selectedLetter: "ا",
+  selectedLetter: "",
 };
 
 export const alphabetSlice = createSlice({

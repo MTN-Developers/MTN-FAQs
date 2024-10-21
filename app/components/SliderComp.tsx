@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CourseFaq } from "../types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -10,18 +10,57 @@ import {
   HiOutlineArrowRightCircle,
   HiOutlineArrowLeftCircle,
 } from "react-icons/hi2";
+import { useGetSearchResultQuery } from "../store/apiSlice";
+import { useAppDispatch } from "../store";
+import { setSelectedLetter } from "../store/slices/alphabetSlice";
 
 interface SliderCompProps {
   faqs: CourseFaq[];
   onSelectOrgan: (organ: string) => void;
+  courseId: string;
+  selectedOrganFromSlider: string;
+  setFaqsData: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const SliderComp: React.FC<SliderCompProps> = ({ faqs, onSelectOrgan }) => {
+const SliderComp: React.FC<SliderCompProps> = ({
+  faqs,
+  onSelectOrgan,
+  setFaqsData,
+  courseId,
+  selectedOrganFromSlider,
+}) => {
+  const [selectedOrgan, setSelectedOrgan] = useState<string>("");
   const prevRef = React.useRef<HTMLButtonElement | null>(null);
   const nextRef = React.useRef<HTMLButtonElement | null>(null);
 
+  //clear active item
+
+  const dispatch = useAppDispatch();
+
   // Extract unique organ names from faqs (assuming 'title' corresponds to organ)
   const organs = Array.from(new Set(faqs.map((faq) => faq.title)));
+
+  const { data: searchResults } = useGetSearchResultQuery(
+    {
+      courseId,
+      keyword: selectedOrgan,
+    },
+    {
+      skip: !selectedOrgan,
+    }
+  );
+
+  useEffect(() => {
+    if (searchResults) {
+      setFaqsData(searchResults);
+    }
+  }, [searchResults, setFaqsData]);
+
+  const handleClick = (organ: string) => {
+    dispatch(setSelectedLetter(""));
+    setSelectedOrgan(organ);
+    onSelectOrgan(organ);
+  };
 
   return (
     <div
@@ -59,8 +98,12 @@ const SliderComp: React.FC<SliderCompProps> = ({ faqs, onSelectOrgan }) => {
         {organs.map((organ, index) => (
           <SwiperSlide key={index} className="!w-auto">
             <div
-              onClick={() => onSelectOrgan(organ)}
-              className="hover:bg-[#00204c] hover:text-white mx-[8px] text-gray-500 cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px]"
+              onClick={() => handleClick(organ)}
+              className={`hover:bg-[#00204c] hover:text-white mx-[8px] cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px] ${
+                selectedOrganFromSlider === organ
+                  ? "bg-[#00204c] text-white"
+                  : "text-gray-500"
+              }`}
             >
               {organ}
             </div>
