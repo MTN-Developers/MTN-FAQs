@@ -2,16 +2,17 @@
 
 import React from "react";
 import { CourseFaq } from "../types";
+import { RenderHTML } from "./RenderHTML";
 
 interface SingleResultCompProps {
   faq: CourseFaq;
 }
 
 const SingleResultComp: React.FC<SingleResultCompProps> = ({ faq }) => {
-  console.log("from single result comp", faq);
+  // console.log("from single result comp", faq);
 
   const { title, question, answer } = faq;
-  console.log("obj", { title, question, answer });
+  // console.log("obj", { title, question, answer });
 
   return (
     <div
@@ -24,7 +25,7 @@ const SingleResultComp: React.FC<SingleResultCompProps> = ({ faq }) => {
 
       <div className="border-b">
         <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7">
-          - السؤال:
+          - الأعراض:
         </h2>
 
         <p className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px]">
@@ -33,12 +34,12 @@ const SingleResultComp: React.FC<SingleResultCompProps> = ({ faq }) => {
       </div>
       <div className="md:mt-[56px]">
         <h2 className="text-[#00204C] text-right font-pnu text-2xl font-bold leading-7">
-          - الإجابة:
+          - المشاعر المضطربة:
         </h2>
 
-        <p className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px]">
-          {answer}
-        </p>
+        <div>
+          <RenderHTML htmlContent={answer} />
+        </div>
       </div>
     </div>
   );

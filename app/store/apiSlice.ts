@@ -1,7 +1,7 @@
 // src/store/apiSlice.ts
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { CourseMetaData, CourseFaq } from "../types";
+import { CourseMetaData, CourseFaq, GetFaqsResponse } from "../types";
 
 export const apiSlice = createApi({
   reducerPath: "api", // Ensure consistency with the store
@@ -13,8 +13,9 @@ export const apiSlice = createApi({
     getCourseMetaDataBySlug: builder.query<CourseMetaData, string>({
       query: (slug) => `course_meta_data/slug/${slug}`,
     }),
-    getCourseFaqs: builder.query<CourseFaq[], string>({
+    getCourseFaqs: builder.query({
       query: (courseId) => `course_faqs/${courseId}`,
+      transformResponse: (response: GetFaqsResponse) => response.items,
     }),
     // New search endpoint
     getSearchResult: builder.query<

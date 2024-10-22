@@ -1,141 +1,136 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import { useParams, useSearchParams } from "next/navigation";
-import ResultsComp from "../../components/ResultsComp";
-import SearchComp from "../../components/SearchComp";
+import SearchComp from "@/app/components/SearchComp";
+import SearchPageResultComp from "@/app/components/SearchPageResultComp";
+import { useGetCourseMetaDataBySlugQuery } from "@/app/store/apiSlice";
+import { CourseFaq } from "@/app/types";
 import Image from "next/image";
+import { useParams, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import closeIcon from "@/app/assets/images/Close.svg";
-import {
-  useGetCourseMetaDataBySlugQuery,
-  useGetSearchResultQuery, // Use the search hook
-} from "../../store/apiSlice";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { CourseFaq } from "../../types";
 
-const SearchPage = () => {
-  // Unconditionally call Hooks at the top
-  const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
-  const [removedOrgans, setRemovedOrgans] = useState<string[]>([]);
-
+const Page = () => {
+  const params = useParams();
   const searchParams = useSearchParams();
+
+  // Handle potential array value for slug
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const query = searchParams.get("query") || "";
 
-  const params = useParams();
-  const slug = params.slug;
+  const [originalFaqs, setOriginalFaqs] = useState<CourseFaq[]>([]);
+  const [faqs, setFaqs] = useState<CourseFaq[]>([]);
+  const [taps, setTaps] = useState<string[]>([]);
+  const [selectedTap, setSelectedTap] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  console.log(slug);
+  console.log("taps is ", taps);
 
   const {
-    isError: isMetaError,
-    isLoading: isMetaLoading,
     data: metaData,
-  } = useGetCourseMetaDataBySlugQuery(`${slug}`);
+    isLoading: isMetaLoading,
+    error: metaError,
+  } = useGetCourseMetaDataBySlugQuery(slug);
 
   const courseId = metaData?.id;
 
-  console.log(courseId);
+  const fetchFaqs = async () => {
+    if (!courseId) return;
 
-  // Fetch search results using the custom hook
-  const {
-    isError: isSearchError,
-    isLoading: isSearchLoading,
-    data: searchResults,
-  } = useGetSearchResultQuery(
-    courseId && query ? { courseId, keyword: query } : skipToken
-  );
+    setIsLoading(true);
+    setError(null);
 
-  console.log(searchResults);
-
-  // Initialize state for filtered FAQs
-  const [filteredFaqs, setFilteredFaqs] = useState<CourseFaq[]>([]);
-
-  useEffect(() => {
-    if (!searchResults) {
-      setFilteredFaqs([]);
-      return;
-    }
-
-    // Utility function to remove Arabic diacritics
-    function removeArabicDiacritics(text: string): string {
-      return text.replace(/[\u064B-\u0652]/g, "");
-    }
-
-    let filtered = searchResults;
-
-    if (selectedOrgan) {
-      const normalizedSelectedOrgan =
-        removeArabicDiacritics(selectedOrgan).toLowerCase();
-      filtered = filtered.filter((faq) =>
-        removeArabicDiacritics(faq.title)
-          .toLowerCase()
-          .includes(normalizedSelectedOrgan)
+    try {
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BASE_URL
+        }/course_faqs/${courseId}/search?keyword=${encodeURIComponent(
+          query
+        )}?limit=10000`
       );
-    }
 
-    if (removedOrgans.length > 0) {
-      filtered = filtered.filter((faq) => !removedOrgans.includes(faq.title));
-    }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    setFilteredFaqs(filtered);
-  }, [searchResults, selectedOrgan, removedOrgans]);
+      const data = await response.json();
+      setOriginalFaqs(data);
+      setFaqs(data);
 
-  // Handle loading and error states
-  if (isMetaLoading || isSearchLoading) return <div>Loading...</div>;
-  if (isMetaError || isSearchError) return <div>Error loading data.</div>;
-  if (!courseId) return <div>No course metadata found.</div>;
-  if (!searchResults) return <div>No FAQs found.</div>;
-
-  // Extract unique organ names from filteredFaqs, excluding removed organs
-  // const RelatedOrgans = Array.from(
-  //   new Set(
-  //     filteredFaqs
-  //       .map((faq) => faq.title) // Assuming 'title' corresponds to organ
-  //       .filter((organ) => !removedOrgans.includes(organ))
-  //   )
-  // );
-
-  // Function to handle removing an organ
-  const handleRemoveOrgan = (organ: string) => {
-    setRemovedOrgans((prev) => [...prev, organ]);
-
-    // If the removed organ was selected, reset the selectedOrgan state
-    if (selectedOrgan === organ) {
-      setSelectedOrgan(null);
+      const uniqueTaps = Array.from(
+        new Set(data.map((faq: CourseFaq) => faq.title))
+      );
+      setTaps(uniqueTaps);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while fetching FAQs"
+      );
+      console.error("Error fetching FAQs:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  //handlers
+  const handleKeywordClick = (tap: string) => {
+    // console.log("tap is ", tap);
+    // Set selectedTaps to only the clicked tap
+    setSelectedTap(tap);
+    // Filter faqs accordingly
+    const filteredFaqs = originalFaqs.filter(
+      (faq: CourseFaq) => faq.title === tap
+    );
+    setFaqs(filteredFaqs);
+  };
+
+  const handleRemoveOrgan = (tap: string) => {
+    const newSelectedTaps = taps.filter((t) => t !== tap);
+    setTaps(newSelectedTaps);
+    // setSelectedTaps(newSelectedTaps);
+
+    if (newSelectedTaps.length === 0) {
+      // No taps selected, show all originalFaqs
+      setFaqs(originalFaqs);
+    } else {
+      // Filter faqs to include only those with titles in newSelectedTaps
+      const filteredFaqs = originalFaqs.filter((faq) =>
+        newSelectedTaps.includes(faq.title)
+      );
+      setFaqs(filteredFaqs);
+    }
+  };
+
+  useEffect(() => {
+    if (courseId && query) {
+      fetchFaqs();
+    }
+  }, [courseId, query]);
+
+  if (metaError || error) {
+    return <div>Error: {error || "Failed to load course metadata"}</div>;
+  }
+
   return (
-    <div className="w-full lg:px-[68px]">
-      {/* Search Component */}
+    <div className="container mx-auto px-4 py-8">
       <div className="mx-auto mt-[115px] md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
         <SearchComp />
       </div>
-
-      {/* Related Organs Filters */}
       <div className="mx-auto mt-[32px] lg:max-w-[1080px]">
-        {searchResults.length > 0 ? (
+        {taps.length > 0 ? (
           <ul className="w-full flex flex-wrap gap-4 items-center justify-center ">
-            {searchResults.map((result) => (
+            {taps.map((tap, index) => (
               <li
-                key={result.id}
+                key={index}
                 className={`flex font-pnu text-[#6f6c8f] border border-[#d0d0d0] items-center gap-2 rounded-full px-3 py-2 ${
-                  selectedOrgan === result.title ? "bg-gray-100 text-white" : ""
+                  selectedTap === tap ? "bg-gray-100 text-white" : ""
                 }`}
               >
                 <button
-                  onClick={() => {
-                    if (selectedOrgan === result.title) {
-                      setSelectedOrgan(null);
-                    } else {
-                      setSelectedOrgan(result.title);
-                    }
-                  }}
+                  onClick={() => handleKeywordClick(tap)}
                   className="flex items-center gap-2"
                 >
-                  <span className="pl-4 cursor-pointer font-bold">
-                    {result.title}
-                  </span>
+                  <span className="pl-4 cursor-pointer font-bold">{tap}</span>
                 </button>
                 <Image
                   src={closeIcon}
@@ -143,7 +138,7 @@ const SearchPage = () => {
                   className="cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent triggering the parent button's onClick
-                    handleRemoveOrgan(result.title);
+                    handleRemoveOrgan(tap);
                   }}
                 />
               </li>
@@ -153,16 +148,27 @@ const SearchPage = () => {
           <p className="text-center">لا توجد نتائج مطابقة للبحث.</p>
         )}
       </div>
-
-      {/* Search Results Header */}
       <h1 className="text-black text-right [font-feature-settings:'liga'_off,'clig'_off] font-pnu text-4xl lg:text-4xl font-bold leading-[160%] mt-4 w-full px-[18px]">
         نتائج البحث
       </h1>
-
-      {/* Results Component */}
-      <ResultsComp faqs={searchResults} selectedOrgan={selectedOrgan!} />
+      {isMetaLoading && <div>Loading...</div>}
+      {isLoading && <div>Loading...</div>}
+      {faqs.length > 0 ? (
+        <SearchPageResultComp faqs={faqs} />
+      ) : (
+        <>
+          <div
+            dir="rtl"
+            className="mx-auto flex items-center justify-center md:mb-[48px] md:w-[880px] bg-white shadow-lg rounded-xl md:min-h-[518px] md:px-[90px] md:py-[60px]"
+          >
+            <p className="text-2xl font-pnu font-bold text-gray-400">
+              لا توجد نتائج مطابقة للبحث.
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default SearchPage;
+export default Page;

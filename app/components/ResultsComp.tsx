@@ -8,13 +8,13 @@ import { useAppSelector } from "../store/";
 
 interface ResultsCompProps {
   searchTerm?: string;
-  faqs: CourseFaq[];
+  faqs: CourseFaq[]; // Make faqs optional
   selectedOrgan?: string;
 }
 
 const ResultsComp: React.FC<ResultsCompProps> = ({
   searchTerm,
-  faqs,
+  faqs = [], // Default to empty array
   selectedOrgan,
 }) => {
   const selectedLetter = useAppSelector(
@@ -22,61 +22,10 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const [filteredFaqs, setFilteredFaqs] = useState<CourseFaq[]>([]);
 
-  console.log("inside component", faqs);
-
-  // Utility function to remove Arabic diacritics
-  // function removeArabicDiacritics(text: string): string {
-  //   return text.replace(/[\u064B-\u0652]/g, "");
-  // }
-
-  // useEffect(() => {
-  //   let filtered: CourseFaq[] = [...faqs];
-
-  //   // Filter by selectedOrgan (assuming 'title' corresponds to organ)
-  //   if (selectedOrgan) {
-  //     const normalizedSelectedOrgan =
-  //       removeArabicDiacritics(selectedOrgan).toLowerCase();
-  //     filtered = filtered.filter((faq) =>
-  //       removeArabicDiacritics(faq.title)
-  //         .toLowerCase()
-  //         .includes(normalizedSelectedOrgan)
-  //     );
-  //   }
-
-  //   // // Filter by searchTerm
-  //   // if (searchTerm && searchTerm.trim() !== "") {
-  //   //   const normalizedSearchTerm =
-  //   //     removeArabicDiacritics(searchTerm).toLowerCase();
-  //   //   filtered = filtered.filter(
-  //   //     (faq) =>
-  //   //       removeArabicDiacritics(faq.title)
-  //   //         .toLowerCase()
-  //   //         .includes(normalizedSearchTerm) ||
-  //   //       removeArabicDiacritics(faq.question)
-  //   //         .toLowerCase()
-  //   //         .includes(normalizedSearchTerm) ||
-  //   //       removeArabicDiacritics(faq.answer)
-  //   //         .toLowerCase()
-  //   //         .includes(normalizedSearchTerm)
-  //   //   );
-  //   // }
-
-  //   // Filter by selectedLetter (first letter of title)
-  //   if (selectedLetter) {
-  //     filtered = filtered.filter((faq) => {
-  //       const title = faq.title.startsWith("ال")
-  //         ? faq.title.slice(2)
-  //         : faq.title;
-  //       const firstLetter = removeArabicDiacritics(title[0]).toLowerCase();
-  //       return firstLetter === selectedLetter.toLowerCase();
-  //     });
-  //   }
-
-  //   setFilteredFaqs(filtered);
-  //   setCurrentPage(1); // Reset to first page on new filter
-  // }, [searchTerm, faqs, selectedOrgan, selectedLetter]);
+  // Debugging statements
+  // console.log("faqs in ResultsComp:", faqs);
+  // console.log("Is faqs an array?", Array.isArray(faqs));
 
   // If no data to display, render nothing
   if (!searchTerm && !selectedLetter && !selectedOrgan && faqs.length === 0) {
@@ -98,14 +47,14 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
   ) => {
     if (type === "prev") {
       return (
-        <a className="relative bottom-1 flex text-black font-normal h-[34px] text-sm flex-col justify-center items-center gap-2.5 bg-white px-1 py-2.5 rounded-lg">
+        <a className="relative flex text-black font-normal h-[34px] text-sm flex-col justify-center items-center gap-2.5 bg-white px-1 py-2.5 rounded-lg">
           Prev
         </a>
       );
     }
     if (type === "next") {
       return (
-        <a className="relative bottom-1 text-black font-normal flex h-[34px] text-sm flex-col justify-center items-center gap-2.5 bg-white px-1 py-2.5 rounded-lg">
+        <a className="relative text-black font-normal flex h-[34px] text-sm flex-col justify-center items-center gap-2.5 bg-white px-1 py-2.5 rounded-lg">
           Next
         </a>
       );

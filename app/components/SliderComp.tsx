@@ -15,6 +15,7 @@ import { useAppDispatch } from "../store";
 import { setSelectedLetter } from "../store/slices/alphabetSlice";
 
 interface SliderCompProps {
+  globalFaqs: CourseFaq[];
   faqs: CourseFaq[];
   onSelectOrgan: (organ: string) => void;
   courseId: string;
@@ -23,6 +24,7 @@ interface SliderCompProps {
 }
 
 const SliderComp: React.FC<SliderCompProps> = ({
+  globalFaqs,
   faqs,
   onSelectOrgan,
   setFaqsData,
@@ -38,7 +40,7 @@ const SliderComp: React.FC<SliderCompProps> = ({
   const dispatch = useAppDispatch();
 
   // Extract unique organ names from faqs (assuming 'title' corresponds to organ)
-  const organs = Array.from(new Set(faqs.map((faq) => faq.title)));
+  const organs = Array.from(new Set(globalFaqs?.map((faq) => faq.title)));
 
   const { data: searchResults } = useGetSearchResultQuery(
     {
