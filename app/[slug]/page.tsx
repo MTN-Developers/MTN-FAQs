@@ -7,9 +7,11 @@ import SliderComp from "../components/SliderComp";
 import ResultsComp from "../components/ResultsComp";
 
 const Page = () => {
-  const [globalFaqsData, setGlobalFaqsData] = useState();
+  const [globalFaqsData, setGlobalFaqsData] = useState([]);
   const [faqsData, setFaqsData] = useState([]);
   const [courseId, setCourseId] = useState<string | null>(null);
+  const [isLoadingCourseId, setIsLoadingCourseId] = useState(true);
+  const [isLoadingFaqsData, setIsLoadingFaqsData] = useState(true);
   const [selectedOrganFromSlider, setSelectedOrganFromSlider] =
     useState<string>("");
   const params = useParams();
@@ -35,6 +37,8 @@ const Page = () => {
       setCourseId(data.id);
     } catch (err) {
       console.error("Error fetching course ID:", err);
+    } finally {
+      setIsLoadingCourseId(false);
     }
   };
 
@@ -42,7 +46,7 @@ const Page = () => {
   const fetchFaqs = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/course_faqs/${courseId}`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/course_faqs/${courseId}?limit=10000`
       );
 
       if (!response.ok) {
@@ -50,10 +54,12 @@ const Page = () => {
       }
 
       const data = await response.json();
-      setGlobalFaqsData(data.items); // Assuming 'data' contains the FAQs array
-      setFaqsData(data.items); // Assuming 'data.items' contains the FAQs array
+      setGlobalFaqsData(data.items || []);
+      setFaqsData(data.items || []);
     } catch (err) {
       console.error("Error fetching FAQs:", err);
+    } finally {
+      setIsLoadingFaqsData(false);
     }
   };
 
@@ -76,6 +82,14 @@ const Page = () => {
     return <div>No slug provided</div>;
   }
 
+  if (isLoadingCourseId || isLoadingFaqsData) {
+    return <div>Loading...</div>;
+  }
+
+  if (!courseId) {
+    return <div>No course ID found.</div>;
+  }
+
   return (
     <main className="flex flex-col items-center">
       <h1 className="md:pt-[60px] text-white text-center mt-10 text-[64px] md:text-8xl font-pnu font-bold leading-normal">
@@ -84,23 +98,26 @@ const Page = () => {
       <div className="mx-auto md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
         <SearchComp />
       </div>
-      <div className="lg:w-[1280px] md:w-[700px] w-[310px] h-[320px] md:h-[200px] lg:h-[148px] mt-6 shrink-0 bg-white shadow-md rounded-[23px]">
-        <AlphabetComp
-          courseId={courseId}
-          setFaqsData={setFaqsData}
-          onSelectOrgan={(organ) => setSelectedOrganFromSlider(organ)}
-        />
-      </div>
-      <div>
-        <SliderComp
-          globalFaqs={globalFaqsData!}
-          faqs={faqsData}
-          selectedOrganFromSlider={selectedOrganFromSlider}
-          courseId={courseId}
-          setFaqsData={setFaqsData}
-          onSelectOrgan={(organ) => setSelectedOrganFromSlider(organ)}
-        />
-      </div>
+      {!isLoadingCourseId && courseId && (
+        <>
+          <div className="lg:w-[1280px] md:w-[700px] w-[310px] h-[320px] md:h-[200px] lg:h-[148px] mt-6 shrink-0 bg-white shadow-md rounded-[23px]">
+            <AlphabetComp
+              courseId={courseId}
+              setFaqsData={setFaqsData}
+              onSelectOrgan={(organ) => setSelectedOrganFromSlider(organ)}
+            />
+          </div>
+          <div>
+            <SliderComp
+              globalFaqs={globalFaqsData}
+              selectedOrganFromSlider={selectedOrganFromSlider}
+              courseId={courseId}
+              setFaqsData={setFaqsData}
+              onSelectOrgan={(organ) => setSelectedOrganFromSlider(organ)}
+            />
+          </div>
+        </>
+      )}
       <div className="w-full md:w-[650px] lg:w-[1280px] mt-6">
         {faqsData.length > 0 ? (
           <ResultsComp

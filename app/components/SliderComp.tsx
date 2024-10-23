@@ -16,16 +16,14 @@ import { setSelectedLetter } from "../store/slices/alphabetSlice";
 
 interface SliderCompProps {
   globalFaqs: CourseFaq[];
-  faqs: CourseFaq[];
   onSelectOrgan: (organ: string) => void;
   courseId: string;
   selectedOrganFromSlider: string;
-  setFaqsData: React.Dispatch<React.SetStateAction<any[]>>;
+  setFaqsData: React.Dispatch<React.SetStateAction<CourseFaq[]>>;
 }
 
 const SliderComp: React.FC<SliderCompProps> = ({
   globalFaqs,
-  faqs,
   onSelectOrgan,
   setFaqsData,
   courseId,
@@ -35,12 +33,10 @@ const SliderComp: React.FC<SliderCompProps> = ({
   const prevRef = React.useRef<HTMLButtonElement | null>(null);
   const nextRef = React.useRef<HTMLButtonElement | null>(null);
 
-  //clear active item
-
   const dispatch = useAppDispatch();
 
-  // Extract unique organ names from faqs (assuming 'title' corresponds to organ)
-  const organs = Array.from(new Set(globalFaqs?.map((faq) => faq.title)));
+  // Extract unique organ names from globalFaqs
+  const organs = Array.from(new Set(globalFaqs?.map((faq) => faq.title) || []));
 
   const { data: searchResults } = useGetSearchResultQuery(
     {
@@ -51,6 +47,8 @@ const SliderComp: React.FC<SliderCompProps> = ({
       skip: !selectedOrgan,
     }
   );
+
+  console.log("searchResults is ", searchResults);
 
   useEffect(() => {
     if (searchResults) {

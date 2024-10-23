@@ -23,14 +23,18 @@ export const apiSlice = createApi({
       { courseId: string; keyword: string }
     >({
       query: ({ courseId, keyword }) =>
-        `course_faqs/${courseId}/search?keyword=${encodeURIComponent(keyword)}`,
+        `course_faqs/${courseId}/search?keyword=${encodeURIComponent(
+          keyword
+        )}&limit=1000`,
     }),
     getSearchResultByIndex: builder.query<
       CourseFaq[],
       { courseId: string; index: string }
     >({
       query: ({ courseId, index }) =>
-        `course_faqs/${courseId}/search?index=${encodeURIComponent(index)}`,
+        `course_faqs/${courseId}/search?index=${encodeURIComponent(
+          index
+        )}&limit=1000`,
     }),
   }),
 });

@@ -45,20 +45,19 @@ const Page = () => {
           process.env.NEXT_PUBLIC_BASE_URL
         }/course_faqs/${courseId}/search?keyword=${encodeURIComponent(
           query
-        )}?limit=10000`
+        )}&limit=1000`
       );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      // Explicitly type the data as CourseFaq[]
+      const data: CourseFaq[] = await response.json();
       setOriginalFaqs(data);
       setFaqs(data);
 
-      const uniqueTaps = Array.from(
-        new Set(data.map((faq: CourseFaq) => faq.title))
-      );
+      const uniqueTaps = Array.from(new Set(data.map((faq) => faq.title)));
       setTaps(uniqueTaps);
     } catch (err) {
       setError(
@@ -72,22 +71,16 @@ const Page = () => {
     }
   };
 
-  //handlers
+  // Handlers
   const handleKeywordClick = (tap: string) => {
-    // console.log("tap is ", tap);
-    // Set selectedTaps to only the clicked tap
     setSelectedTap(tap);
-    // Filter faqs accordingly
-    const filteredFaqs = originalFaqs.filter(
-      (faq: CourseFaq) => faq.title === tap
-    );
+    const filteredFaqs = originalFaqs.filter((faq) => faq.title === tap);
     setFaqs(filteredFaqs);
   };
 
   const handleRemoveOrgan = (tap: string) => {
     const newSelectedTaps = taps.filter((t) => t !== tap);
     setTaps(newSelectedTaps);
-    // setSelectedTaps(newSelectedTaps);
 
     if (newSelectedTaps.length === 0) {
       // No taps selected, show all originalFaqs
@@ -123,7 +116,7 @@ const Page = () => {
               <li
                 key={index}
                 className={`flex font-pnu text-[#6f6c8f] border border-[#d0d0d0] items-center gap-2 rounded-full px-3 py-2 ${
-                  selectedTap === tap ? "bg-gray-100 text-white" : ""
+                  selectedTap === tap ? "bg-gray-100 text-[#6f6c8f]" : ""
                 }`}
               >
                 <button

@@ -37,9 +37,9 @@ const SingleResultComp: React.FC<SingleResultCompProps> = ({ faq }) => {
           - المشاعر المضطربة:
         </h2>
 
-        <div>
+        <p className="md:pb-[40px] text-gray-600 text-right font-pnu text-lg font-normal leading-[30px]">
           <RenderHTML htmlContent={answer} />
-        </div>
+        </p>
       </div>
     </div>
   );

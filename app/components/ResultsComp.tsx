@@ -8,13 +8,13 @@ import { useAppSelector } from "../store/";
 
 interface ResultsCompProps {
   searchTerm?: string;
-  faqs: CourseFaq[]; // Make faqs optional
+  faqs?: CourseFaq[]; // Make faqs optional
   selectedOrgan?: string;
 }
 
 const ResultsComp: React.FC<ResultsCompProps> = ({
   searchTerm,
-  faqs = [], // Default to empty array
+  faqs = [],
   selectedOrgan,
 }) => {
   const selectedLetter = useAppSelector(
@@ -22,10 +22,6 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Debugging statements
-  // console.log("faqs in ResultsComp:", faqs);
-  // console.log("Is faqs an array?", Array.isArray(faqs));
 
   // If no data to display, render nothing
   if (!searchTerm && !selectedLetter && !selectedOrgan && faqs.length === 0) {
