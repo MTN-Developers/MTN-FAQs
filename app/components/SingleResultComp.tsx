@@ -19,7 +19,7 @@ const SingleResultComp: React.FC<SingleResultCompProps> = ({ faq }) => {
       dir="rtl"
       className="mx-auto mb-4 md:mb-[48px] md:w-[680px] lg:w-[880px] bg-white shadow-lg rounded-xl h-auto w-[310px] md:min-h-[518px] px-6 py-10 md:px-[90px] md:py-[60px]"
     >
-      <h1 className="md:mb-[56px] text-black text-right font-pnu text-[40px] md:text-[40px] font-bold leading-7">
+      <h1 className="md:mb-[56px]  text-black text-right font-pnu text-[40px] md:text-[40px] font-bold leading-[48px]">
         {title}
       </h1>
 
