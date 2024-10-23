@@ -1,143 +1,76 @@
-"use client";
-import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import SearchComp from "../components/SearchComp";
-import AlphabetComp from "../components/AlphabetComp";
-import SliderComp from "../components/SliderComp";
-import ResultsComp from "../components/ResultsComp";
-import { CourseFaq } from "../types";
-import Loader from "../components/ui/Loader";
+import { Metadata } from 'next';
+import FaqPageClient from '../components/FaqPageClient';
+import { CourseMetaData, GetFaqsResponse } from '../types';
 
-const Page = () => {
-  const [globalFaqsData, setGlobalFaqsData] = useState<CourseFaq[]>([]);
-  const [faqsData, setFaqsData] = useState<CourseFaq[]>([]);
-  const [courseId, setCourseId] = useState<string | null>(null);
-  const [isLoadingCourseId, setIsLoadingCourseId] = useState(true);
-  const [isLoadingFaqsData, setIsLoadingFaqsData] = useState(true);
-  const [selectedOrganFromSlider, setSelectedOrganFromSlider] =
-    useState<string>("");
-  const params = useParams();
-  let slug = params.slug;
+export async function generateStaticParams() {
+	// Fetch all slugs at build time
+	const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/course_meta_data`);
+	const slugsData = await res.json();
+	const slugs = slugsData.map((slugObj: { slug: string }) => ({ slug: slugObj.slug }));
 
-  // Ensure slug is a string
-  if (Array.isArray(slug)) {
-    slug = slug[0];
-  }
+	return slugs;
+}
 
-  // Fetch the Course ID when the component mounts
-  useEffect(() => {
-    const getCourseId = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/course_meta_data/slug/${slug}`
-        );
+async function getCourseData(slug: string) {
+	// Fetch the Course ID and FAQ data on the server side
+	const courseMetaDataResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/course_meta_data/slug/${slug}`);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+	if (!courseMetaDataResponse.ok) {
+		throw new Error(`HTTP error fetching course ID! status: ${courseMetaDataResponse.status}`);
+	}
 
-        const data = await response.json();
-        setCourseId(data.id);
-      } catch (err) {
-        console.error("Error fetching course ID:", err);
-      } finally {
-        setIsLoadingCourseId(false);
-      }
-    };
+	const courseMetaData: CourseMetaData = await courseMetaDataResponse.json();
+	const courseMetaDataId = courseMetaData.id;
 
-    if (slug) {
-      getCourseId();
-    }
-  }, [slug]);
+	const faqsResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/course_faqs/${courseMetaDataId}?limit=10000`);
 
-  // Fetch the FAQs when the Course ID is available
-  useEffect(() => {
-    const fetchFaqs = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/course_faqs/${courseId}?limit=10000`
-        );
+	if (!faqsResponse.ok) {
+		throw new Error(`HTTP error fetching FAQs! status: ${faqsResponse.status}`);
+	}
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+	const faqsData: GetFaqsResponse = await faqsResponse.json();
+	return {
+		course: courseMetaData,
+		faqsData: faqsData,
+	};
+}
 
-        const data = await response.json();
-        const items: CourseFaq[] = data.items || [];
-        setGlobalFaqsData(items);
-        setFaqsData(items);
-      } catch (err) {
-        console.error("Error fetching FAQs:", err);
-      } finally {
-        setIsLoadingFaqsData(false);
-      }
-    };
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+	// Fetch course data based on slug
+	const { course, faqsData } = await getCourseData(params.slug);
 
-    if (courseId) {
-      fetchFaqs();
-    }
-  }, [courseId]);
+	return {
+		title: `${course.course_name_ar} | ${course.course_name_en}`,
+		description: course.course_name_ar,
+		keywords: faqsData.items.map((faq) => faq.title).join(', '),
+		openGraph: {
+			title: `${course.course_name_ar} | ${course.course_name_en}`,
+			description: course.course_name_ar,
+			images: [
+				{
+					url: course.course_logo,
+					width: 800,
+					height: 600,
+					alt: course.course_name_ar,
+				},
+			],
+		},
+	};
+}
 
-  // Handle cases where slug or data is not available
-  if (!slug) {
-    return <div>No slug provided</div>;
-  }
+const Page = async ({ params }: { params: { slug: string } }) => {
+	const { slug } = params;
 
-  if (isLoadingCourseId || isLoadingFaqsData) {
-    return <Loader />;
-  }
+	// Fetch course data on the server
+	const { course, faqsData } = await getCourseData(slug);
 
-  if (!courseId) {
-    return <div>No course ID found.</div>;
-  }
-
-  return (
-    <main className="flex flex-col items-center">
-      <h1 className="md:pt-[60px] text-white text-center mt-10 text-[64px] md:text-8xl font-pnu font-bold leading-normal">
-        {selectedOrganFromSlider}
-      </h1>
-      <div className="mx-auto md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
-        <SearchComp />
-      </div>
-      {!isLoadingCourseId && courseId && (
-        <>
-          <div className="lg:w-[1280px] md:w-[700px] w-[310px] h-[320px] md:h-[200px] lg:h-[148px] mt-6 shrink-0 bg-white shadow-md rounded-[23px]">
-            <AlphabetComp
-              courseId={courseId}
-              setFaqsData={setFaqsData}
-              onSelectOrgan={(organ) => setSelectedOrganFromSlider(organ)}
-            />
-          </div>
-          <div>
-            <SliderComp
-              globalFaqs={globalFaqsData}
-              selectedOrganFromSlider={selectedOrganFromSlider}
-              courseId={courseId}
-              setFaqsData={setFaqsData}
-              onSelectOrgan={(organ) => setSelectedOrganFromSlider(organ)}
-            />
-          </div>
-        </>
-      )}
-      <div className="w-full md:w-[650px] lg:w-[1280px] mt-6">
-        {faqsData.length > 0 ? (
-          <ResultsComp
-            faqs={faqsData}
-            selectedOrgan={selectedOrganFromSlider}
-          />
-        ) : (
-          <div
-            dir="rtl"
-            className="mx-auto flex items-center justify-center md:mb-[48px] md:w-[880px] bg-white shadow-lg rounded-xl md:min-h-[518px] md:px-[90px] md:py-[60px]"
-          >
-            <p className="text-2xl font-pnu font-bold text-gray-400">
-              لا توجد نتائج مطابقة للبحث.
-            </p>
-          </div>
-        )}
-      </div>
-    </main>
-  );
+	return (
+		<FaqPageClient
+			slug={slug}
+			courseId={course.id}
+			faqsData={faqsData.items}
+		/>
+	);
 };
 
 export default Page;
