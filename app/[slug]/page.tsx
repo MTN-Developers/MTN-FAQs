@@ -43,6 +43,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 		title: `${course.course_name_ar} | ${course.course_name_en}`,
 		description: course.course_name_ar,
 		keywords: faqsData.items.map((faq) => faq.title).join(', '),
+		robots: 'index, follow',
+		viewport: 'width=device-width, initial-scale=1',
 		openGraph: {
 			title: `${course.course_name_ar} | ${course.course_name_en}`,
 			description: course.course_name_ar,
