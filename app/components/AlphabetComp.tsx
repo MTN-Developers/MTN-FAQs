@@ -4,9 +4,10 @@ import React, { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setSelectedLetter } from "../store/slices/alphabetSlice";
 import { useGetSearchResultByIndexQuery } from "../store/apiSlice";
+import { CourseFaq } from "../types"; // Import the CourseFaq type
 
 const alphabets = [
-  "ا",
+  "أ",
   "ب",
   "ت",
   "ث",
@@ -38,7 +39,7 @@ const alphabets = [
 
 interface IProps {
   courseId: string;
-  setFaqsData: React.Dispatch<React.SetStateAction<any[]>>;
+  setFaqsData: React.Dispatch<React.SetStateAction<CourseFaq[]>>; // Updated type
   onSelectOrgan: (organ: string) => void;
 }
 
@@ -46,7 +47,7 @@ const AlphabetComp: React.FC<IProps> = ({
   courseId,
   setFaqsData,
   onSelectOrgan,
-}: IProps) => {
+}) => {
   const dispatch = useAppDispatch();
   const selectedLetter = useAppSelector(
     (state) => state.alphabet.selectedLetter
@@ -67,7 +68,7 @@ const AlphabetComp: React.FC<IProps> = ({
       dispatch(setSelectedLetter(letter));
       onSelectOrgan("");
     },
-    [dispatch]
+    [dispatch, onSelectOrgan]
   );
 
   React.useEffect(() => {

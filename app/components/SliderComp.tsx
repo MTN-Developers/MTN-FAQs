@@ -101,7 +101,7 @@ const SliderComp: React.FC<SliderCompProps> = ({
               onClick={() => handleClick(organ)}
               className={`hover:bg-[#00204c] hover:text-white mx-[8px] cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px] ${
                 selectedOrganFromSlider === organ
-                  ? "bg-[#00204c] text-white"
+                  ? "bg-[#00203c] text-white"
                   : "text-gray-500"
               }`}
             >

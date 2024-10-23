@@ -5,10 +5,12 @@ import SearchComp from "../components/SearchComp";
 import AlphabetComp from "../components/AlphabetComp";
 import SliderComp from "../components/SliderComp";
 import ResultsComp from "../components/ResultsComp";
+import { CourseFaq } from "../types";
+import Loader from "../components/ui/Loader";
 
 const Page = () => {
-  const [globalFaqsData, setGlobalFaqsData] = useState([]);
-  const [faqsData, setFaqsData] = useState([]);
+  const [globalFaqsData, setGlobalFaqsData] = useState<CourseFaq[]>([]);
+  const [faqsData, setFaqsData] = useState<CourseFaq[]>([]);
   const [courseId, setCourseId] = useState<string | null>(null);
   const [isLoadingCourseId, setIsLoadingCourseId] = useState(true);
   const [isLoadingFaqsData, setIsLoadingFaqsData] = useState(true);
@@ -19,52 +21,30 @@ const Page = () => {
 
   // Ensure slug is a string
   if (Array.isArray(slug)) {
-    slug = slug[0]; // Take the first element, or handle as needed
+    slug = slug[0];
   }
-
-  // Fetch the Course ID
-  const getCourseId = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/course_meta_data/slug/${slug}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCourseId(data.id);
-    } catch (err) {
-      console.error("Error fetching course ID:", err);
-    } finally {
-      setIsLoadingCourseId(false);
-    }
-  };
-
-  // Fetch the FAQs
-  const fetchFaqs = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/course_faqs/${courseId}?limit=10000`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setGlobalFaqsData(data.items || []);
-      setFaqsData(data.items || []);
-    } catch (err) {
-      console.error("Error fetching FAQs:", err);
-    } finally {
-      setIsLoadingFaqsData(false);
-    }
-  };
 
   // Fetch the Course ID when the component mounts
   useEffect(() => {
+    const getCourseId = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/course_meta_data/slug/${slug}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setCourseId(data.id);
+      } catch (err) {
+        console.error("Error fetching course ID:", err);
+      } finally {
+        setIsLoadingCourseId(false);
+      }
+    };
+
     if (slug) {
       getCourseId();
     }
@@ -72,6 +52,27 @@ const Page = () => {
 
   // Fetch the FAQs when the Course ID is available
   useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/course_faqs/${courseId}?limit=10000`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const items: CourseFaq[] = data.items || [];
+        setGlobalFaqsData(items);
+        setFaqsData(items);
+      } catch (err) {
+        console.error("Error fetching FAQs:", err);
+      } finally {
+        setIsLoadingFaqsData(false);
+      }
+    };
+
     if (courseId) {
       fetchFaqs();
     }
@@ -83,7 +84,7 @@ const Page = () => {
   }
 
   if (isLoadingCourseId || isLoadingFaqsData) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (!courseId) {
