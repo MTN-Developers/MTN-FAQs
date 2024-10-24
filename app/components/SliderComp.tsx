@@ -10,6 +10,7 @@ import { HiOutlineArrowRightCircle, HiOutlineArrowLeftCircle } from 'react-icons
 import { useGetSearchResultQuery } from '../store/apiSlice';
 import { useAppDispatch } from '../store';
 import { setSelectedLetter } from '../store/slices/alphabetSlice';
+import Loader from './ui/Loader';
 
 interface SliderCompProps {
 	globalFaqs: CourseFaq[];
@@ -35,7 +36,11 @@ const SliderComp: React.FC<SliderCompProps> = ({
 	// Extract unique organ names from globalFaqs
 	const organs = Array.from(new Set(globalFaqs?.map((faq) => faq.title) || []));
 
-	const { data: searchResults } = useGetSearchResultQuery(
+	const {
+		data: searchResults,
+		isLoading,
+		isFetching,
+	} = useGetSearchResultQuery(
 		{
 			courseId,
 			keyword: selectedOrgan,
@@ -58,67 +63,70 @@ const SliderComp: React.FC<SliderCompProps> = ({
 	};
 
 	return (
-		<div
-			dir='rtl'
-			className='relative flex items-center mt-[45px] md:mt-[48px] w-[310px] md:w-[650px] lg:w-[1180px]'
-		>
-			{/* Left Arrow */}
-			<div className='hidden md:block md:absolute -left-14 z-10'>
-				<button
-					ref={nextRef}
-					className='p-2'
-				>
-					<HiOutlineArrowLeftCircle size={24} />
-				</button>
-			</div>
-
-			{/* Swiper */}
-			<Swiper
-				modules={[Navigation]}
-				navigation={{
-					prevEl: prevRef.current,
-					nextEl: nextRef.current,
-				}}
-				onBeforeInit={(swiper) => {
-					if (swiper.params.navigation && typeof swiper.params.navigation !== 'boolean') {
-						swiper.params.navigation.prevEl = prevRef.current;
-						swiper.params.navigation.nextEl = nextRef.current;
-					}
-				}}
-				spaceBetween={5}
-				slidesPerView='auto'
-				className='flex items-center'
+		<>
+			{(isFetching || isLoading) && <Loader />}
+			<div
+				dir='rtl'
+				className='relative flex items-center mt-[45px] md:mt-[48px] w-[310px] md:w-[650px] lg:w-[1180px]'
 			>
-				{/* Dynamically generate SwiperSlides from organs array */}
-				{organs.map((organ, index) => (
-					<SwiperSlide
-						key={index}
-						className='!w-auto'
+				{/* Left Arrow */}
+				<div className='hidden md:block md:absolute -left-14 z-10'>
+					<button
+						ref={nextRef}
+						className='p-2'
 					>
-						<div
-							onClick={() => handleClick(organ)}
-							className={`hover:bg-[#00204c] hover:text-white mx-[8px] cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px] ${
-								selectedOrgan === organ && selectedOrganFromSlider === organ
-									? 'bg-[#00203c] text-white'
-									: 'text-gray-500'
-							}`}
-						>
-							{organ}
-						</div>
-					</SwiperSlide>
-				))}
-			</Swiper>
+						<HiOutlineArrowLeftCircle size={24} />
+					</button>
+				</div>
 
-			{/* Right Arrow */}
-			<div className='hidden md:block md:absolute -right-14 z-10'>
-				<button
-					ref={prevRef}
-					className='p-2'
+				{/* Swiper */}
+				<Swiper
+					modules={[Navigation]}
+					navigation={{
+						prevEl: prevRef.current,
+						nextEl: nextRef.current,
+					}}
+					onBeforeInit={(swiper) => {
+						if (swiper.params.navigation && typeof swiper.params.navigation !== 'boolean') {
+							swiper.params.navigation.prevEl = prevRef.current;
+							swiper.params.navigation.nextEl = nextRef.current;
+						}
+					}}
+					spaceBetween={5}
+					slidesPerView='auto'
+					className='flex items-center'
 				>
-					<HiOutlineArrowRightCircle size={24} />
-				</button>
+					{/* Dynamically generate SwiperSlides from organs array */}
+					{organs.map((organ, index) => (
+						<SwiperSlide
+							key={index}
+							className='!w-auto'
+						>
+							<div
+								onClick={() => handleClick(organ)}
+								className={`hover:bg-[#00204c] hover:text-white mx-[8px] cursor-pointer transition duration-300 flex flex-col justify-center items-center border border-gray-400 bg-white shadow-md px-12 py-4 rounded-[14px] ${
+									selectedOrgan === organ && selectedOrganFromSlider === organ
+										? '!bg-[#00203c] !text-white'
+										: 'text-gray-500'
+								}`}
+							>
+								{organ}
+							</div>
+						</SwiperSlide>
+					))}
+				</Swiper>
+
+				{/* Right Arrow */}
+				<div className='hidden md:block md:absolute -right-14 z-10'>
+					<button
+						ref={prevRef}
+						className='p-2'
+					>
+						<HiOutlineArrowRightCircle size={24} />
+					</button>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 
