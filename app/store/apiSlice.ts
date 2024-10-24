@@ -6,7 +6,7 @@ import { CourseMetaData, CourseFaq, GetFaqsResponse } from '../types';
 export const apiSlice = createApi({
 	reducerPath: 'api', // Ensure consistency with the store
 	baseQuery: fetchBaseQuery({
-		baseUrl: 'https://api.mis.mtninstitute.net/v1/',
+		baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
 	}),
 	endpoints: (builder) => ({
 		// Existing endpoints
