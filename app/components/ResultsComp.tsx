@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { CourseFaq } from "../types";
 import SingleResultComp from "./SingleResultComp";
 import { ConfigProvider, Pagination } from "antd";
@@ -22,6 +22,9 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
   );
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Create a ref to the top of the results
+  const topRef = useRef<HTMLDivElement>(null);
 
   // If no data to display, render nothing
   if (!searchTerm && !selectedLetter && !selectedOrgan && faqs.length === 0) {
@@ -60,7 +63,7 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
   };
 
   return (
-    <div className="faqs md:mt-[64px]">
+    <div className="faqs md:mt-[64px]" ref={topRef}>
       {faqs.length > 0 ? (
         <div>
           {currentFaqs.map((faq) => (
@@ -68,7 +71,7 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
           ))}
 
           {/* Pagination Component */}
-          <div className="flex justify-center mt-4" dir="ltr">
+          <div className="flex justify-center  mt-4" dir="ltr">
             <ConfigProvider
               theme={{
                 components: {
@@ -83,7 +86,21 @@ const ResultsComp: React.FC<ResultsCompProps> = ({
                 current={currentPage}
                 total={total}
                 pageSize={pageSize}
-                onChange={(page) => setCurrentPage(page)}
+                onChange={(page) => {
+                  setCurrentPage(page);
+                  // Scroll to 200px above the top of the results
+                  if (topRef.current) {
+                    const elementPosition =
+                      topRef.current.getBoundingClientRect().top +
+                      window.scrollY;
+                    const offsetPosition = elementPosition - 200;
+
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: "smooth",
+                    });
+                  }
+                }}
                 showSizeChanger={false}
                 showQuickJumper={false}
                 hideOnSinglePage={true}
