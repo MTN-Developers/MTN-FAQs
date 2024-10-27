@@ -2,8 +2,6 @@ import FaqPageClient from '../components/FaqPageClient';
 import { Suspense } from 'react';
 import Loader from '../components/ui/Loader';
 import { notFound } from 'next/navigation';
-import Header from '../components/Header';
-import { getCourseData } from '../utils/getCourseData';
 
 export async function generateStaticParams() {
 	// Fetch all slugs at build time
@@ -19,16 +17,9 @@ const Page = async ({ params }: { params: { slug: string } }) => {
 
 	// Fetch course data on the server
 	try {
-		const { course, faqsData } = await getCourseData(slug);
-
 		return (
 			<Suspense fallback={<Loader />}>
-				<Header logo={course.course_logo} />
-				<FaqPageClient
-					slug={slug}
-					courseId={course.id}
-					faqsData={faqsData.items}
-				/>
+				<FaqPageClient slug={slug} />
 			</Suspense>
 		);
 	} catch (error) {

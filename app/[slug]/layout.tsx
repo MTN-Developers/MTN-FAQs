@@ -38,10 +38,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 const layout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<>
+		<div className='flex flex-col items-center justify-end min-h-screen'>
 			{children}
 			<Footer />
-		</>
+		</div>
 	);
 };
 
