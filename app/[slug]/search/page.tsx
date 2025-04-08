@@ -143,7 +143,7 @@ const Page = () => {
       <Navbar />
       <Hero paymentLink={tamahyLink} />
       <div className="container mx-auto px-4 py-8">
-        <div className="mx-auto block lg:hidden mt-[10px] md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
+        <div className="mx-auto block lg:hidden mt-[50px] md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
           <SearchComp />
         </div>
 

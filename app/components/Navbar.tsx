@@ -176,23 +176,12 @@ const Navbar = ({ selectedOrganFromSlider }: IProps) => {
               placeholder="Search for anything..."
             />
           </div> */}
-
-          <div
-            className={`mx-auto md:mt-[20px] md:mb-[20px] md:w-[520px] w-[310px] ${
-              selectedOrganFromSlider === ""
-                ? "mt-[10px] mb-10 md:mt-[20px] w-[90%]"
-                : ""
-            }`}
-          >
-            <SearchComp />
-          </div>
-
           {/* Mobile navigation links */}
-          <ul className="flex flex-col font-medium border border-gray-100 rounded-lg bg-gray-50">
+          <ul className="flex flex-col my-10 font-medium border border-gray-100 rounded-lg bg-gray-50">
             <li>
               <a
                 href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded-t-lg"
+                className="block py-2 px-3 text-black  rounded-t-lg"
                 aria-current="page"
               >
                 الصفحة الرئيسية
@@ -207,6 +196,16 @@ const Navbar = ({ selectedOrganFromSlider }: IProps) => {
               </a>
             </li> */}
           </ul>
+
+          <div
+            className={`mx-auto md:mt-[20px] md:mb-[20px] md:w-[520px] w-[310px] ${
+              selectedOrganFromSlider === ""
+                ? "mt-[10px] mb-10 md:mt-[20px] w-[90%]"
+                : ""
+            }`}
+          >
+            <SearchComp />
+          </div>
         </div>
       </div>
     </nav>
