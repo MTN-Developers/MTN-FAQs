@@ -6,9 +6,10 @@ import AlphabetComp from "./AlphabetComp";
 import SliderComp from "./SliderComp";
 import ResultsComp from "./ResultsComp";
 import { CourseFaq, CourseMetaData } from "../types";
-import Header from "./Header";
+// import Header from "./Header";
 import Loader from "./ui/Loader";
 import { useRouter } from "next/navigation";
+import Hero from "./Hero";
 
 const FaqPageClient = ({ slug }: { slug: string }) => {
   const [globalFaqsData, setGlobalFaqsData] = useState<CourseFaq[]>([]);
@@ -79,7 +80,8 @@ const FaqPageClient = ({ slug }: { slug: string }) => {
     <>
       {courseMetaData ? (
         <>
-          <Header logo={courseMetaData.course_logo} />
+          {/* <Header logo={courseMetaData.course_logo} /> */}
+          <Hero />
           <main className="flex flex-col items-center container mx-auto px-4 py-8">
             {selectedOrganFromSlider !== "" && (
               <h1 className="md:pt-[5px] text-white text-center mt-2 text-[30px] md:text-6xl font-pnu font-bold !leading-snug">

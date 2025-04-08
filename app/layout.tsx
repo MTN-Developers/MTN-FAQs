@@ -58,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="ar" className={pnuArabic.variable}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f9f9f9] bg-gradient-to-b from-[#03224e] to-[#f9f9f9] bg-no-repeat md:[background-size:100%_430px] [background-size:100%_400px]    overflow-x-hidden min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f9f9f9]  bg-no-repeat md:[background-size:100%_430px] [background-size:100%_400px]    overflow-x-hidden min-h-screen`}
       >
         <Providers>{children}</Providers>
       </body>
