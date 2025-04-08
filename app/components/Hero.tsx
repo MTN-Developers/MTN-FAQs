@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import logo from "@/public/images/tamahy-logo.svg";
 import backVideo from "@/public/videos/backVid.mp4";
-import playerIcon from "@/public/images/Player.svg";
+import playerIcon from "@/public/images/playIcon.svg";
 import { VscChromeClose } from "react-icons/vsc";
 
 // import { Modal } from "antd";
@@ -23,7 +23,7 @@ const Hero = ({ paymentLink }: { paymentLink: string }) => {
   return (
     <div
       dir="rtl"
-      className="relative font-pnu lg:w-[1280px] w-full rounded-lg lg:top-[100px] mx-auto  flex flex-col lg:justify-end lg:items-start justify-center items-center p-8 lg:p-[80px] overflow-hidden mb-[60px] md:mb-[90px]"
+      className="relative font-pnu lg:w-[1280px] w-full rounded-lg top-[100px] mx-auto  flex flex-col lg:justify-end lg:items-start justify-center items-center p-8 lg:p-[80px] overflow-hidden mb-[60px] md:mb-[90px]"
     >
       {/* Background Video */}
       <video
@@ -42,7 +42,7 @@ const Hero = ({ paymentLink }: { paymentLink: string }) => {
 
       {/* Overlay Content */}
       <div className="relative z-20 flex flex-col lg:items-start items-center   ">
-        <Image src={logo} alt="logo" className="mb-6 w-[200px] lg:w-auto" />
+        <Image src={logo} alt="logo" className="mb-6 w-[100px] lg:w-auto" />
         <p className=" text-white text-center mb-4  text-2xl lg:text-4xl font-normal leading-[139%] left-[385px] top-[454px]">
           برنامج التماهي الأساسي{" "}
         </p>
@@ -55,17 +55,17 @@ const Hero = ({ paymentLink }: { paymentLink: string }) => {
         <div className="flex items-center gap-4">
           <a
             href={paymentLink}
-            className="bg-[#f08233] text-white w-[150px] lg:w-[200px] rounded-md h-[50px] text-base lg:text-2xl flex items-center justify-center "
+            className="bg-[#c9a885] border-2 border-[#fff] text-white w-[150px] lg:w-[200px] rounded-md h-[50px] text-base lg:text-2xl flex items-center justify-center "
           >
             اشترك الان
           </a>
 
           <button
             onClick={showModal}
-            className="bg-transparent border-2 border-[#f08233] text-[#f08233] w-[150px] text-nowrap lg:w-[200px] rounded-md h-[50px] text-base flex items-center gap-1 lg:gap-4 justify-center "
+            className="bg-transparent border-2 border-[#fff] text-[#fff] w-[150px] text-nowrap lg:w-[200px] rounded-md h-[50px] lg:text-xl text-base flex items-center gap-1 lg:gap-4 justify-center "
           >
             <Image src={playerIcon} alt="play" />
-            <span>مشاهدة الفيديوا</span>{" "}
+            <span>مشاهدة الفيديو</span>{" "}
           </button>
         </div>
       </div>

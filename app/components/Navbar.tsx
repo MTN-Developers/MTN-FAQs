@@ -4,7 +4,7 @@ import logo from "@/app/assets/images/logo-dalel.svg";
 import SearchComp from "./SearchComp";
 
 interface IProps {
-  selectedOrganFromSlider: string;
+  selectedOrganFromSlider?: string;
 }
 
 const Navbar = ({ selectedOrganFromSlider }: IProps) => {
@@ -23,7 +23,7 @@ const Navbar = ({ selectedOrganFromSlider }: IProps) => {
         <div className="hidden md:flex items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="/" className="flex items-center">
+            <a href="/identification" className="flex items-center">
               <Image src={logo} className="h-[75px]" alt="Dalel Logo" />
             </a>
           </div>
@@ -69,7 +69,11 @@ const Navbar = ({ selectedOrganFromSlider }: IProps) => {
           <div className="flex-shrink-0">
             <ul className="flex space-x-8 rtl:space-x-reverse font-medium">
               <li>
-                <a href="#" className="text-blue-700 py-2" aria-current="page">
+                <a
+                  href="/identification"
+                  className="text-blue-700 py-2"
+                  aria-current="page"
+                >
                   الصفحة الرئيسية
                 </a>
               </li>
@@ -85,7 +89,7 @@ const Navbar = ({ selectedOrganFromSlider }: IProps) => {
         {/* Mobile layout */}
         <div className="flex md:hidden items-center justify-between py-3">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <a href="/identification" className="flex items-center">
             <Image src={logo} className="h-[75px]" alt="Dalel Logo" />
           </a>
 

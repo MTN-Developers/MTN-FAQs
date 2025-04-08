@@ -77,6 +77,8 @@ const FaqPageClient = ({ slug }: { slug: string }) => {
     }
   }, [courseMetaData, router]);
 
+  const tamahyLink = "https://managethenow.com/basic-identification/";
+
   return (
     <>
       {courseMetaData ? (
@@ -84,7 +86,7 @@ const FaqPageClient = ({ slug }: { slug: string }) => {
           {/* <Header logo={courseMetaData.course_logo} /> */}
           <Navbar selectedOrganFromSlider={selectedOrganFromSlider} />
 
-          <Hero />
+          <Hero paymentLink={tamahyLink} />
           <main className="flex flex-col items-center container mx-auto px-4 py-8">
             {selectedOrganFromSlider !== "" && (
               <h1 className="md:pt-[5px] text-white text-center mt-2 text-[30px] md:text-6xl font-pnu font-bold !leading-snug">
