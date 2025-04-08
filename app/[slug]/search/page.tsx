@@ -1,3 +1,5 @@
+//search page.tsx
+
 "use client";
 import SearchComp from "@/app/components/SearchComp";
 import { useGetCourseMetaDataBySlugQuery } from "@/app/store/apiSlice";
