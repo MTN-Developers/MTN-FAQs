@@ -1,8 +1,13 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import logo from "@/app/assets/images/logo-dalel.svg";
+import SearchComp from "./SearchComp";
 
-const Navbar = () => {
+interface IProps {
+  selectedOrganFromSlider: string;
+}
+
+const Navbar = ({ selectedOrganFromSlider }: IProps) => {
   // State to track if mobile menu is open
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -24,7 +29,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar - desktop */}
-          <div className="flex-grow mx-8 max-w-md">
+          {/* <div className="flex-grow mx-8 max-w-md">
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
@@ -50,6 +55,14 @@ const Navbar = () => {
                 placeholder="Search for anything..."
               />
             </div>
+          </div> */}
+
+          <div
+            className={`mx-auto md:mt-[20px] md:mb-[20px] md:w-[520px] w-[310px] ${
+              selectedOrganFromSlider === "" ? "mt-[115px] md:mt-[20px]" : ""
+            }`}
+          >
+            <SearchComp />
           </div>
 
           {/* Navigation Menu - desktop */}
@@ -134,7 +147,7 @@ const Navbar = () => {
           id="navbar-mobile"
         >
           {/* Mobile search input */}
-          <div className="relative mb-4">
+          {/* <div className="relative mb-4">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-500"
@@ -158,6 +171,16 @@ const Navbar = () => {
               className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Search for anything..."
             />
+          </div> */}
+
+          <div
+            className={`mx-auto md:mt-[20px] md:mb-[20px] md:w-[520px] w-[310px] ${
+              selectedOrganFromSlider === ""
+                ? "mt-[10px] mb-10 md:mt-[20px] w-[90%]"
+                : ""
+            }`}
+          >
+            <SearchComp />
           </div>
 
           {/* Mobile navigation links */}

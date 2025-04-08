@@ -1,7 +1,7 @@
 "use client"; // Mark this as a Client Component
 
 import React, { useEffect, useState } from "react";
-import SearchComp from "./SearchComp";
+// import SearchComp from "./SearchComp";
 import AlphabetComp from "./AlphabetComp";
 import SliderComp from "./SliderComp";
 import ResultsComp from "./ResultsComp";
@@ -10,6 +10,7 @@ import { CourseFaq, CourseMetaData } from "../types";
 import Loader from "./ui/Loader";
 import { useRouter } from "next/navigation";
 import Hero from "./Hero";
+import Navbar from "./Navbar";
 
 const FaqPageClient = ({ slug }: { slug: string }) => {
   const [globalFaqsData, setGlobalFaqsData] = useState<CourseFaq[]>([]);
@@ -81,6 +82,8 @@ const FaqPageClient = ({ slug }: { slug: string }) => {
       {courseMetaData ? (
         <>
           {/* <Header logo={courseMetaData.course_logo} /> */}
+          <Navbar selectedOrganFromSlider={selectedOrganFromSlider} />
+
           <Hero />
           <main className="flex flex-col items-center container mx-auto px-4 py-8">
             {selectedOrganFromSlider !== "" && (
@@ -89,13 +92,6 @@ const FaqPageClient = ({ slug }: { slug: string }) => {
               </h1>
             )}
 
-            <div
-              className={`mx-auto md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px] ${
-                selectedOrganFromSlider === "" ? "mt-[115px] md:mt-[20px]" : ""
-              }`}
-            >
-              <SearchComp />
-            </div>
             <div className="lg:w-[1280px] md:w-[700px] w-[310px] h-[320px] md:h-[200px] lg:h-[148px] mt-6 shrink-0 bg-white shadow-md rounded-[23px]">
               <AlphabetComp
                 courseId={courseMetaData.id}
