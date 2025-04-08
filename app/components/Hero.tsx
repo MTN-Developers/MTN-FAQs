@@ -5,7 +5,7 @@ const Hero = () => {
     <>
       <section
         dir="rtl"
-        className="bg-white lg:grid lg:h-[600px] lg:relative lg:top-[100px] rounded-xl shadow-md lg:place-content-center"
+        className="bg-gradient-to-l from-[#d8c198] to-transparent lg:grid lg:h-[600px] lg:relative lg:top-[100px] rounded-xl shadow-md lg:place-content-center"
       >
         <div className="mx-auto w-screen max-w-screen-xl px-4 py-16 sm:px-6 sm:py-24  md:gap-4 lg:px-8 lg:py-32">
           <div className="max-w-prose text-right ">
