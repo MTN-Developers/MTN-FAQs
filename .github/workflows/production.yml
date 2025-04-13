@@ -70,10 +70,6 @@ jobs:
             docker run -d --restart unless-stopped -p "$PORT:$PORT" --name mtn_faq \
               -e PORT="$PORT" \
               -e NEXT_PUBLIC_BASE_URL="$NEXT_PUBLIC_BASE_URL" \
-              -e NEXT_PUBLIC_STRIPE_PUBLIC_KEY="$NEXT_PUBLIC_STRIPE_PUBLIC_KEY" \
-              -e NEXT_PUBLIC_CHECK_PHONE_API_KEY="$NEXT_PUBLIC_CHECK_PHONE_API_KEY" \
-              -e ZOOM_SDK_KEY="$ZOOM_SDK_KEY" \
-              -e ZOOM_SDK_SECRET="$ZOOM_SDK_SECRET" \
               omnia239/mtn_faq:${VERSION}
 
             docker image prune -f
