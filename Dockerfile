@@ -5,7 +5,7 @@ FROM oven/bun:1 AS base
 WORKDIR /app
 
 # First copy only files needed for installation
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 
 
 # Install dependencies with cache mounting
