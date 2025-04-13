@@ -19,7 +19,7 @@ jobs:
 
       - name: Overwrite .env.production file
         run: |
-          echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
+          echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env.production
 
       - name: Extract version from package.json
         id: extract_version
