@@ -22,8 +22,8 @@ WORKDIR /app
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-EXPOSE 3000
+EXPOSE 3001
 ENV NODE_ENV=production \
-    PORT=3000
+    PORT=3001
 
 CMD ["bun", "server.js"]
