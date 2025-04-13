@@ -1,14 +1,27 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-	output: 'standalone',
+import withVideos from "next-videos";
 
-	images: {
-		remotePatterns: [
-			{
-				hostname: 'res.cloudinary.com',
-			},
-		],
-	},
-};
+const nextConfig = withVideos({
+  output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        hostname: "res.cloudinary.com",
+      },
+    ],
+  },
+});
+
+// const nextConfig = {
+//   output: "standalone",
+
+//   images: {
+//     remotePatterns: [
+//       {
+//         hostname: "res.cloudinary.com",
+//       },
+//     ],
+//   },
+// };
 
 export default nextConfig;

@@ -3,23 +3,23 @@
 @tailwind utilities;
 
 * {
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .ant-input-search .ant-input-group .ant-input-affix-wrapper {
-	height: 45px; /* Adjust this value as needed */
+  height: 45px; /* Adjust this value as needed */
 }
 
 .ant-input-search .ant-input-group .ant-input-search-button {
-	height: 45px; /* Adjust this value as needed */
+  height: 45px; /* Adjust this value as needed */
 }
 
 /* Example CSS */
 
 .alphabets {
-	margin: 10px 0;
+  margin: 10px 0;
 }
 
 /* .alphabet-button {
@@ -34,77 +34,90 @@
 } */
 
 .organs {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
 .organs h2 {
-	font-size: 24px;
-	margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .organs ul {
-	list-style-type: none;
-	padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .organs li {
-	padding: 5px 0;
-	font-size: 18px;
+  padding: 5px 0;
+  font-size: 18px;
 }
 
 /* Example CSS to customize pagination arrows and page numbers */
 .ant-pagination {
-	direction: ltr; /* To make arrows point in the correct direction for RTL */
+  direction: ltr; /* To make arrows point in the correct direction for RTL */
 }
 
 .ant-pagination-item {
-	width: 32px !important;
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
+  width: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .ant-pagination-item a {
-	font-weight: 400;
+  font-weight: 400;
 }
 
 .ant-pagination-item .ant-pagination-item-active a {
-	color: white !important;
+  color: white !important;
 }
 
 .ant-pagination .ant-pagination-item-active a {
-	color: white !important;
+  color: white !important;
 }
 
 /* HTML: <div class="loader"></div> */
 .loader {
-	width: 50px;
-	aspect-ratio: 1;
-	display: grid;
-	border: 4px solid #00203c;
-	border-radius: 50%;
-	border-color: #ccc #00203c;
-	animation: l16 1s infinite linear;
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  border: 4px solid #00203c;
+  border-radius: 50%;
+  border-color: #ccc #00203c;
+  animation: l16 1s infinite linear;
 }
 .loader::before,
 .loader::after {
-	content: '';
-	grid-area: 1/1;
-	margin: 2px;
-	border: inherit;
-	border-radius: 50%;
+  content: "";
+  grid-area: 1/1;
+  margin: 2px;
+  border: inherit;
+  border-radius: 50%;
 }
 .loader::before {
-	border-color: #fff #00203c;
-	animation: inherit;
-	animation-duration: 0.5s;
-	animation-direction: reverse;
+  border-color: #fff #00203c;
+  animation: inherit;
+  animation-duration: 0.5s;
+  animation-direction: reverse;
 }
 .loader::after {
-	margin: 8px;
+  margin: 8px;
 }
 @keyframes l16 {
-	100% {
-		transform: rotate(1turn);
-	}
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+/* Phone Input Custom Styles */
+.phone-input {
+  @apply w-full;
+}
+
+.phone-input input {
+  @apply !w-full !bg-[#f2f2f2] h-10 px-3 py-2  border  rounded-md text-sm;
+}
+
+.phone-input .country-list {
+  @apply bg-white border border-gray-200 rounded-md shadow-lg;
 }

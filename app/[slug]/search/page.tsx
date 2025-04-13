@@ -1,3 +1,5 @@
+//search page.tsx
+
 "use client";
 import SearchComp from "@/app/components/SearchComp";
 import { useGetCourseMetaDataBySlugQuery } from "@/app/store/apiSlice";
@@ -7,9 +9,11 @@ import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
 import closeIcon from "@/app/assets/images/Close.svg";
 import Loader from "@/app/components/ui/Loader";
-import Header from "@/app/components/Header";
+// import Header from "@/app/components/Header";
 import { ConfigProvider, Pagination } from "antd";
 import SingleResultComp from "@/app/components/SingleResultComp";
+import Navbar from "@/app/components/Navbar";
+import Hero from "@/app/components/Hero";
 
 const Page = () => {
   const params = useParams();
@@ -41,6 +45,7 @@ const Page = () => {
   } = useGetCourseMetaDataBySlugQuery(slug);
 
   const courseId = metaData?.id;
+  const tamahyLink = "https://managethenow.com/basic-identification/";
 
   // Handlers
   const handleKeywordClick = (tap: string) => {
@@ -136,9 +141,11 @@ const Page = () => {
 
   return (
     <>
-      {metaData && <Header logo={metaData.course_logo} />}
+      {/* {metaData && <Header logo={metaData.course_logo} />} */}
+      <Navbar />
+      <Hero paymentLink={tamahyLink} />
       <div className="container mx-auto px-4 py-8">
-        <div className="mx-auto mt-[115px] md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
+        <div className="mx-auto block lg:hidden mt-[50px] md:mt-[20px] md:mb-[50px] md:w-[520px] w-[310px]">
           <SearchComp />
         </div>
 
