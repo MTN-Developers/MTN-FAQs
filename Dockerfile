@@ -1,35 +1,42 @@
-# Stage 1: Build
-FROM oven/bun:1 as builder
+# Use the official Node.js LTS Alpine base image
+FROM oven/bun:1 AS base
+
+# Set the working directory
 WORKDIR /app
 
-# Accept build args
-ARG NEXT_PUBLIC_BASE_URL
+# First copy only files needed for installation
+COPY package.json bun.lockb ./
 
-# Set environment variable so it is available during build
-ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 
-# Copy package files
-COPY package.json bun.lock ./
-
-# Install dependencies with no verification
-RUN bun install --no-verify
-
-# Copy source files
+# Install dependencies with cache mounting
+RUN --mount=type=cache,target=/root/.bun \
+    bun install 
+# Copy the rest of the application code
 COPY . .
 
-# Build the application
-RUN bun run build
+# Build the Next.js application
+RUN --mount=type=cache,target=/root/.bun \
+    bun run build
 
-# Stage 2: Production
-FROM oven/bun:1-slim
+# Start a new stage for the production image
+FROM base AS production
+
+# Set the working directory
 WORKDIR /app
 
-# Copy only necessary files from builder
-COPY --from=builder /app/.next/standalone ./ 
-COPY --from=builder /app/.next/static ./.next/static
+# Copy only the necessary production files
+COPY --from=base /app/package.json /app/bun.lockb ./
+COPY --from=base /app/.next ./.next
+COPY --from=base /app/public ./public
+COPY --from=base /app/next.config.mjs ./
 
-EXPOSE 3001
-ENV NODE_ENV=production \
-    PORT=3001
+# Set and expose port
+ARG APP_PORT=5556
+ENV PORT=$APP_PORT
+EXPOSE $PORT
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:$PORT || exit 1
 
 CMD ["bun", "start"]
