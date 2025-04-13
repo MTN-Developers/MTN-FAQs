@@ -28,7 +28,8 @@ jobs:
         run: docker build \
           --build-arg APP_PORT=${{ secrets.PRODUCTION_PORT }} \
           --build-arg NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }} \
-          -t omnia239/mtn_faq:${{ env.VERSION }}
+          -t omnia239/mtn_faq:${{ env.VERSION }} \
+          .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
