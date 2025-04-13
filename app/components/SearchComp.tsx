@@ -94,14 +94,48 @@ const SearchComp = () => {
             `/${slug}/search?query=${encodeURIComponent(searchValue)}`
           );
         } else {
-          router.push(
-            `/${slug}/search?query=${encodeURIComponent(searchValue)}`
-          );
+          router.push(`/search?query=${encodeURIComponent(searchValue)}`);
         }
       }
     } catch (error) {
       console.error("Error saving user data:", error);
-      message.error("فشل في حفظ بياناتك. يرجى المحاولة مرة أخرى.");
+
+      // Check if the error is because email already exists
+      if (
+        axios.isAxiosError(error) &&
+        error.response?.status === 409 &&
+        error.response?.data?.message === "email already exist"
+      ) {
+        // If email already exists, consider the user as registered
+        const userData = {
+          name: values.name,
+          email: values.email,
+          phone: phoneValue?.replace(/\D/g, ""),
+        };
+
+        // Save user data to localStorage
+        localStorage.setItem("userData", JSON.stringify(userData));
+
+        // Reset search count
+        localStorage.setItem("freeTrials", "0");
+
+        message.success("تم التعرف عليك! يمكنك الآن متابعة البحث.");
+        setShowModal(false);
+
+        // Perform the search that was attempted
+        if (searchValue.trim() !== "") {
+          if (slug) {
+            router.push(
+              `/${slug}/search?query=${encodeURIComponent(searchValue)}`
+            );
+          } else {
+            router.push(`/search?query=${encodeURIComponent(searchValue)}`);
+          }
+        }
+      } else {
+        // Handle other errors
+        message.error("فشل في حفظ بياناتك. يرجى المحاولة مرة أخرى.");
+      }
     } finally {
       setLoading(false);
     }
