@@ -26,7 +26,7 @@ jobs:
         run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
       - name: Build Docker image
-        run: docker build --build-arg APP_PORT=${{ secrets.PRODUCTION_PORT }} -t omnia239/mtn_faq:${{ env.VERSION }} .
+        run: docker build --build-arg APP_PORT=${{ secrets.PORT }} -t omnia239/mtn_faq:${{ env.VERSION }} .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -68,8 +68,8 @@ jobs:
               docker rm mtn_faq
             fi
 
-            docker run -d --restart unless-stopped -p "$PORT:$PORT" --name mtn_faq \
-              -e PORT="$PORT" \
+            docker run -d --restart unless-stopped -p "$PORT:3001" --name mtn_faq \
+              -e PORT="3001" \
               -e NEXT_PUBLIC_BASE_URL="$NEXT_PUBLIC_BASE_URL" \
               omnia239/mtn_faq:${VERSION}
 
