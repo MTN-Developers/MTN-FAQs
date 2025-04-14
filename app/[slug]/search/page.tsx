@@ -45,7 +45,7 @@ const Page = () => {
   } = useGetCourseMetaDataBySlugQuery(slug);
 
   const courseId = metaData?.id;
-  const tamahyLink = "https://managethenow.com/basic-identification/";
+  const tamahyLink = "https://managethenow.com/main-identification/";
 
   // Handlers
   const handleKeywordClick = (tap: string) => {
