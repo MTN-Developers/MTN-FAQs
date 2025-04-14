@@ -77,7 +77,7 @@ const FaqPageClient = ({ slug }: { slug: string }) => {
     }
   }, [courseMetaData, router]);
 
-  const tamahyLink = "https://managethenow.com/basic-identification/";
+  const tamahyLink = "https://managethenow.com/main-identification/";
 
   return (
     <>
