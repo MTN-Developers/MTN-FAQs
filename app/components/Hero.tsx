@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import logo from "@/public/images/tamahy-logo.svg";
-import backVideo from "../../public/videos/backVid.mp4";
+import backVideo from "../../public/videos/backVideo.mp4";
 import playerIcon from "@/public/images/playIcon.svg";
 import { VscChromeClose } from "react-icons/vsc";
 
