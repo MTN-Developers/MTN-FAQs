@@ -68,6 +68,7 @@ jobs:
               docker rm mtn_faq
             fi
 
+            echo "🚀 Starting new container..."
             docker run -d --restart unless-stopped -p 3001:3001 --name mtn_faq \
               -e PORT="3001" \
               -e NEXT_PUBLIC_BASE_URL="$NEXT_PUBLIC_BASE_URL" \
