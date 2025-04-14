@@ -65,7 +65,7 @@ const Hero = ({ paymentLink }: { paymentLink: string }) => {
             className="bg-transparent border-2 border-[#fff] text-[#fff] w-[150px] text-nowrap lg:w-[200px] rounded-md h-[50px] lg:text-xl text-base flex items-center gap-1 lg:gap-4 justify-center "
           >
             <Image src={playerIcon} alt="play" />
-            <span>مشاهدة الفيديو</span>{" "}
+            <span>مشاهده الفيديو</span>{" "}
           </button>
         </div>
       </div>
